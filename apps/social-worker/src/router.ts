@@ -1,6 +1,7 @@
 import type { ConnectionState, InviteStatus, InviteSummary, MyProfile, PublicProfile } from "@saas/contracts/social";
 import { createSqlExecutor } from "@saas/db/d1";
 import {
+  createAccountRepository,
   createCommunityRepository,
   createSafetyRepository,
   createScrapbookRepository,
@@ -216,6 +217,25 @@ async function member(request: Request, env: Env, requestId: string): Promise<Re
     // A block reads exactly like the person not existing, in both directions.
     if (!person || (await repo.isBlockedEitherWay(userId, person.userId))) return notFound(requestId);
     return ok({ profile: await viewPerson(repo, userId, person) }, requestId);
+  }
+
+  const account = createAccountRepository(executor);
+  if (path === "/v1/social/me/export" && method === "GET") return ok(await account.export(userId), requestId);
+  if (path === "/v1/social/me/delete" && method === "POST") {
+    const parsed = await readJson(request);
+    if (!parsed.ok) return fail("bad_request", "Body must be JSON", 400, requestId);
+    const confirm = (parsed.body as { confirmHandle?: unknown } | null)?.confirmHandle;
+    if (confirm !== mine.handle) return invalid(requestId, { confirmHandle: ["Type your handle to confirm"] });
+    // Otherwise Koottam could be left with nobody able to act on reports.
+    if (await isStaff(safety, userId, env)) {
+      return fail("moderator_cannot_delete", "A moderator can't delete their account here", 409, requestId);
+    }
+    const communities = await account.communitiesNeedingHandover(userId);
+    if (communities.length > 0) {
+      return fail("hand_over_communities", "Hand over your communities first", 409, requestId, { communities });
+    }
+    await account.deleteEverything(userId, now);
+    return ok({ deleted: true }, requestId);
   }
 
   const safetyResponse = await handleSafetyRoute(request, env, repo, safety, mine, now, requestId);

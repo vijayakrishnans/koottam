@@ -250,4 +250,12 @@ export class SocialClient {
   unsuspend(handle: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
     return this.transport.request({ method: "POST", path: `/v1/social/admin/people/${encodeURIComponent(handle)}/unsuspend`, body: {} }, opts);
   }
+
+  exportMyData(opts: RequestOptions = {}): Promise<Record<string, unknown>> {
+    return this.transport.request({ method: "GET", path: "/v1/social/me/export" }, opts);
+  }
+
+  deleteMyAccount(confirmHandle: string, opts: RequestOptions = {}): Promise<{ deleted: boolean }> {
+    return this.transport.request({ method: "POST", path: "/v1/social/me/delete", body: { confirmHandle } }, opts);
+  }
 }

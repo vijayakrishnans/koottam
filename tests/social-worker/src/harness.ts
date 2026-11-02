@@ -19,7 +19,7 @@ const MIGRATIONS = resolve(process.cwd(), "../../packages/db/src/migrations");
 
 export function createTestDb(): D1Database {
   const db = new DatabaseSync(":memory:");
-  for (const m of manifest.migrations.filter((x) => x.context === "social" || x.id === "010_identity_core")) {
+  for (const m of manifest.migrations.filter((x) => x.context === "social" || ["010_identity_core", "020_membership_core", "050_identity_security_events", "120_notifications_core"].includes(x.id))) {
     db.exec(readFileSync(resolve(MIGRATIONS, m.path), "utf-8"));
   }
   const prepare = (sql: string, values: unknown[] = []) => ({
