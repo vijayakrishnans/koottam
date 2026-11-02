@@ -22,6 +22,9 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
   }, [me.error, router]);
 
   const handle = me.data?.profile.handle;
+  const counters = useApiQuery(qk.socialCounters(), () => wrap(() => client.social.counters()), { enabled: !!handle });
+  const pageWaiting = (counters.data?.scraps ?? 0) + (counters.data?.testimonials ?? 0);
+  const requestsWaiting = counters.data?.friendRequests ?? 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,8 +35,14 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
           </Link>
           <nav className="flex flex-1 flex-wrap items-center gap-x-4 gap-y-1 text-sm">
             <Link href="/home" className="hover:underline">Home</Link>
-            {handle && <Link href={`/u/${handle}`} className="hover:underline">Profile</Link>}
-            <Link href="/friends" className="hover:underline">Friends</Link>
+            {handle && (
+              <Link href={`/u/${handle}`} className="hover:underline">
+                Profile{pageWaiting > 0 && <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{pageWaiting}</span>}
+              </Link>
+            )}
+            <Link href="/friends" className="hover:underline">
+              Friends{requestsWaiting > 0 && <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{requestsWaiting}</span>}
+            </Link>
             <Link href="/invites" className="hover:underline">Invites</Link>
             <Link href="/settings" className="hover:underline">Settings</Link>
           </nav>

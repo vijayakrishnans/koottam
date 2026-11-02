@@ -201,5 +201,14 @@ export const manifest: MigrationManifest = {
       description:
         "Koottam friends — friend requests, symmetric friendships and blocks, with a short-lived stage test invite's hash",
     },
+    {
+      id: "220_social_scrapbook",
+      context: "social",
+      path: "220_social_scrapbook/up.sql",
+      checksum:
+        "40c1caa987e8b70d822b1e300c470ddf917a892fff748a765d8a96c43e8df4a9",
+      description:
+        "Koottam scrapbook — scraps, testimonials awaiting approval, fans and ratings",
+    },
   ],
 };

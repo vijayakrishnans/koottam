@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import type { PublicProfile } from "@saas/contracts/social";
+import { Scrapbook, Standing, Testimonials } from "@/components/social/page-panels";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -111,6 +112,11 @@ export default function ProfilePage() {
     void queryClient.invalidateQueries({ queryKey: qk.socialPerson(handle) });
     void queryClient.invalidateQueries({ queryKey: qk.socialFriends(handle) });
     void queryClient.invalidateQueries({ queryKey: qk.socialFriendRequests() });
+    void queryClient.invalidateQueries({ queryKey: qk.socialScraps(handle) });
+    void queryClient.invalidateQueries({ queryKey: qk.socialTestimonials(handle) });
+    void queryClient.invalidateQueries({ queryKey: qk.socialStanding(handle) });
+    void queryClient.invalidateQueries({ queryKey: qk.socialCounters() });
+    void queryClient.invalidateQueries({ queryKey: qk.socialHome() });
   };
 
   if (person.error) {
@@ -124,6 +130,7 @@ export default function ProfilePage() {
 
   return (
     <div className="grid gap-4 md:grid-cols-[1fr_16rem]">
+    <div className="min-w-0 space-y-4">
     <Card>
       <CardHeader>
         <CardTitle>{p.displayName}</CardTitle>
@@ -148,7 +155,13 @@ export default function ProfilePage() {
         )}
       </CardContent>
     </Card>
+    {!p.limited && <Scrapbook profile={p} />}
+    {!p.limited && <Testimonials profile={p} />}
+    </div>
+    <div className="space-y-4">
+    {!p.limited && <Standing profile={p} />}
     {!p.limited && <FriendsPanel handle={p.handle} />}
+    </div>
     </div>
   );
 }

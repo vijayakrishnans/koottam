@@ -1,9 +1,16 @@
 import type { ConnectionState, InviteStatus, InviteSummary, MyProfile, PublicProfile } from "@saas/contracts/social";
 import { createSqlExecutor } from "@saas/db/d1";
-import { createSocialRepository, type SocialInvite, type SocialProfile, type SocialRepository } from "@saas/db/social";
+import {
+  createScrapbookRepository,
+  createSocialRepository,
+  type SocialInvite,
+  type SocialProfile,
+  type SocialRepository,
+} from "@saas/db/social";
 import type { Env } from "./env.js";
 import { fail, invalid, notFound, ok } from "./http.js";
 import { handleFriendRoute } from "./friends.js";
+import { handleScrapbookRoute } from "./scrapbook.js";
 import { parseCreate, parseEdit } from "./validate.js";
 
 const REQUEST_ID_RE = /^[\w-]{1,128}$/;
@@ -201,7 +208,9 @@ async function member(request: Request, env: Env, requestId: string): Promise<Re
     return ok({ profile: await viewPerson(repo, userId, person) }, requestId);
   }
 
-  return handleFriendRoute(request, repo, mine, now, requestId);
+  const executor = createSqlExecutor(env.PLATFORM_DB!);
+  const scrapbook = await handleScrapbookRoute(request, repo, createScrapbookRepository(executor), mine, now, requestId);
+  return scrapbook ?? handleFriendRoute(request, repo, mine, now, requestId);
 }
 
 export async function route(request: Request, env: Env): Promise<Response> {

@@ -1,0 +1,24 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-5
+  title: "Scrapbook, home page, testimonials, fans and ratings"
+spec:
+  goal: Friends can leave scraps and testimonials, a home page shows them in time order, and members can become fans and rate friends privately.
+  affects:
+    - default/koottam/contracts
+    - default/koottam/db
+    - default/koottam/db-migrate
+    - default/koottam/db-tests
+    - default/koottam/sdk
+    - default/koottam/social-worker
+    - default/koottam/social-worker-tests
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - A scrap written on stage appears on the recipient's page and their friends' home pages, newest first.
+    - A friends-only scrap is refused to a non-friend, by test.
+    - A testimonial is invisible until approved and disappears when hidden.
+    - Rating averages appear and no route exposes who rated what, by test.
+  gates: []

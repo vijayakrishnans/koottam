@@ -103,3 +103,75 @@ export interface FriendsResponse extends PeopleResponse {
   /** True when this person shares their friends with friends only. */
   hidden: boolean;
 }
+
+export type ScrapVisibility = "everyone" | "friends";
+
+export interface Scrap {
+  id: string;
+  from: PublicProfileCard;
+  to: PublicProfileCard;
+  body: string;
+  visibility: ScrapVisibility;
+  createdAt: string;
+  canDelete: boolean;
+}
+
+export interface ScrapsResponse {
+  scraps: Scrap[];
+  /** True when the page is shared with friends only. */
+  hidden: boolean;
+}
+
+export interface CreateScrapRequest {
+  body: string;
+  visibility?: ScrapVisibility;
+}
+
+export interface UpcomingBirthday extends PublicProfileCard {
+  day: number;
+  month: number;
+}
+
+export interface HomeResponse {
+  scraps: Scrap[];
+  birthdays: UpcomingBirthday[];
+}
+
+export type TestimonialStatus = "pending" | "approved" | "hidden";
+
+export interface Testimonial {
+  id: string;
+  from: PublicProfileCard;
+  body: string;
+  /** Only the subject and the author see anything but approved testimonials. */
+  status: TestimonialStatus;
+  createdAt: string;
+  mine: boolean;
+}
+
+export interface TestimonialsResponse {
+  testimonials: Testimonial[];
+  hidden: boolean;
+}
+
+export interface RatingValues {
+  trusty: number;
+  cool: number;
+  funny: number;
+}
+
+export interface StandingResponse {
+  fans: number | null;
+  isFan: boolean;
+  /** Averages, or null until enough people have rated that nobody's rating can be inferred. */
+  ratings: RatingValues | null;
+  /** Your own rating of this person. Nobody else's is ever returned. */
+  myRating: RatingValues | null;
+  canRate: boolean;
+}
+
+export interface CountersResponse {
+  friendRequests: number;
+  testimonials: number;
+  scraps: number;
+}
