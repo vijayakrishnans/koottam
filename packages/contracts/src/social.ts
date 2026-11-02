@@ -31,6 +31,7 @@ export interface PublicProfile extends PublicProfileCard {
 export interface MyProfile extends PublicProfile {
   birthdayVisible: boolean;
   visibility: ProfileVisibility;
+  isStaff: boolean;
 }
 
 export interface CreateProfileRequest {
@@ -114,6 +115,8 @@ export interface Scrap {
   visibility: ScrapVisibility;
   createdAt: string;
   canDelete: boolean;
+  /** You wrote this, so there's nothing for you to report. */
+  mine: boolean;
 }
 
 export interface ScrapsResponse {
@@ -250,4 +253,33 @@ export interface Post {
 export interface TopicResponse {
   topic: TopicSummary & { communitySlug: string; communityName: string; canPost: boolean; canModerate: boolean };
   posts: Post[];
+}
+
+export type ReportSubject = "person" | "scrap" | "testimonial" | "post" | "topic" | "community";
+export type ReportReason = "harassment" | "hate" | "sexual" | "violence" | "spam" | "child_safety" | "illegal" | "other";
+export type ReportStatus = "open" | "dismissed" | "removed" | "suspended";
+export type ReportAction = "dismiss" | "remove" | "suspend";
+
+export interface CreateReportRequest {
+  subjectType: ReportSubject;
+  /** A handle for a person, a slug for a community, otherwise the item's id. */
+  subjectId: string;
+  reason: ReportReason;
+  details?: string;
+}
+
+export interface ReportItem {
+  id: string;
+  subjectType: ReportSubject;
+  subjectId: string;
+  reason: ReportReason;
+  details: string | null;
+  snapshot: string;
+  owner: PublicProfileCard | null;
+  reporter: PublicProfileCard | null;
+  createdAt: string;
+}
+
+export interface ReportsResponse {
+  reports: ReportItem[];
 }

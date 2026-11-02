@@ -8,9 +8,9 @@ As-built ≠ intent. This file records what actually shipped, and every place th
 | KT1 — people | ✅ on stage, shown in a browser. Prod sign-in needs Google credentials from the owner | #4 |
 | KT2 — friends | ✅ on stage, shown in a browser, with blocking also proven by test | #5, #6 |
 | KT3 — scrapbook and testimonials | ✅ on stage, shown in a browser | #7, #8 |
-| KT4 — communities | In progress | this PR |
-| KT5 — photos | | |
-| KT6 — safety and the front door | | |
+| KT4 — communities | ✅ on stage, shown in a browser | #9 |
+| KT5 — photos | Not started. Needs an R2 token created by the owner, so KT6 went first | |
+| KT6 — safety and the front door | In progress | this PR |
 
 ## Departures from the design
 
@@ -43,6 +43,12 @@ Rating averages stay hidden until three people have rated, so nobody's rating ca
 ### Communities as built (KT-7)
 
 `member_count` is counted when read instead of stored, so it can't drift. Topics can also be locked, and owners can delete a community, which the design didn't list. A community's forum is readable by any signed-in member when it's open and only by its members when it needs approval. Blocked people don't see each other's topics, posts or membership, including inside a community they share. People can own 20 communities and write 60 forum posts an hour. Leaving doesn't lift a ban.
+
+### Reports and moderation as built (KT-8)
+
+Moderators are whoever spent the founder invite, plus anyone in `social_staff`. Stage's test invite also counts, but on stage only. A report keeps a copy of the content so that deleting it doesn't escape review, and the copy is erased on resolve. Resolving closes every open report on the same thing.
+
+The plan said a suspended person cannot sign in. The baseline's identity worker doesn't check account status at login, and this change leaves it alone. Suspension ends their sessions and marks the account, and every social route then refuses them, so they can reach nothing even though a new sign-in succeeds. Moderation decisions are recorded on the report and suspension rows, not in the baseline audit log.
 
 ### Known issues
 

@@ -25,6 +25,7 @@ function toScrap(s: ScrapRow, viewerId: string): Scrap {
     visibility: s.visibility,
     createdAt: s.createdAt,
     canDelete: s.from.userId === viewerId || s.to.userId === viewerId,
+    mine: s.from.userId === viewerId,
   };
 }
 

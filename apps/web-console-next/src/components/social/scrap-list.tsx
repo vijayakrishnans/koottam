@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { Scrap } from "@saas/contracts/social";
+import { ReportButton } from "@/components/social/report-button";
 import { Button } from "@/components/ui/button";
 
 export function ScrapList({
@@ -33,9 +34,12 @@ export function ScrapList({
             </span>
           </div>
           <p className="whitespace-pre-wrap break-words">{s.body}</p>
-          {onDelete && s.canDelete && (
-            <Button size="sm" variant="ghost" onClick={() => onDelete(s.id)}>Delete</Button>
-          )}
+          <div className="flex gap-1">
+            {onDelete && s.canDelete && (
+              <Button size="sm" variant="ghost" onClick={() => onDelete(s.id)}>Delete</Button>
+            )}
+            {!s.mine && <ReportButton subjectType="scrap" subjectId={s.id} />}
+          </div>
         </li>
       ))}
     </ul>

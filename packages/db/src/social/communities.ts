@@ -190,7 +190,7 @@ export function createCommunityRepository(sql: SqlExecutor) {
     async topics(viewerId: string, communityId: string): Promise<TopicRow[]> {
       const { rows } = await sql.execute(
         `SELECT t.*, p.user_id, p.handle, p.display_name, ${VISIBLE_POST_COUNT}
-         FROM social_topics t JOIN social_profiles p ON p.user_id = t.author_id
+         FROM social_topics t JOIN social_profiles p ON p.user_id = t.author_id AND p.deleted_at IS NULL
          WHERE t.community_id = $2 AND t.deleted_at IS NULL AND ${notBlockedWith("t.author_id")}
          ORDER BY t.last_post_at DESC LIMIT 50`,
         [viewerId, communityId],
@@ -201,7 +201,7 @@ export function createCommunityRepository(sql: SqlExecutor) {
     async topic(viewerId: string, id: string): Promise<TopicRow | null> {
       const { rows } = await sql.execute(
         `SELECT t.*, p.user_id, p.handle, p.display_name, ${VISIBLE_POST_COUNT}
-         FROM social_topics t JOIN social_profiles p ON p.user_id = t.author_id
+         FROM social_topics t JOIN social_profiles p ON p.user_id = t.author_id AND p.deleted_at IS NULL
          WHERE t.id = $2 AND t.deleted_at IS NULL AND ${notBlockedWith("t.author_id")}`,
         [viewerId, id],
       );
@@ -256,7 +256,7 @@ export function createCommunityRepository(sql: SqlExecutor) {
     async posts(viewerId: string, topicId: string): Promise<PostRow[]> {
       const { rows } = await sql.execute(
         `SELECT po.id, po.body, po.created_at, p.user_id, p.handle, p.display_name
-         FROM social_posts po JOIN social_profiles p ON p.user_id = po.author_id
+         FROM social_posts po JOIN social_profiles p ON p.user_id = po.author_id AND p.deleted_at IS NULL
          WHERE po.topic_id = $2 AND po.deleted_at IS NULL AND ${notBlockedWith("po.author_id")}
          ORDER BY po.created_at, po.id LIMIT 500`,
         [viewerId, topicId],

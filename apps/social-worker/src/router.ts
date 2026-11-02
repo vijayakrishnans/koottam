@@ -2,6 +2,7 @@ import type { ConnectionState, InviteStatus, InviteSummary, MyProfile, PublicPro
 import { createSqlExecutor } from "@saas/db/d1";
 import {
   createCommunityRepository,
+  createSafetyRepository,
   createScrapbookRepository,
   createSocialRepository,
   type SocialInvite,
@@ -12,6 +13,7 @@ import type { Env } from "./env.js";
 import { fail, invalid, notFound, ok } from "./http.js";
 import { handleCommunityRoute } from "./communities.js";
 import { handleFriendRoute } from "./friends.js";
+import { handleSafetyRoute, isStaff } from "./safety.js";
 import { handleScrapbookRoute } from "./scrapbook.js";
 import { parseCreate, parseEdit } from "./validate.js";
 
@@ -39,7 +41,7 @@ async function readJson(request: Request): Promise<{ ok: true; body: unknown } |
   }
 }
 
-function toMine(p: SocialProfile): MyProfile {
+function toMine(p: SocialProfile, staff: boolean): MyProfile {
   return {
     handle: p.handle,
     displayName: p.displayName,
@@ -58,6 +60,7 @@ function toMine(p: SocialProfile): MyProfile {
     connection: "self",
     friendRequestId: null,
     mutualFriends: null,
+    isStaff: staff,
   };
 }
 
@@ -139,7 +142,7 @@ async function createProfile(
 
   const profile = await repo.profileByUser(userId);
   if (!profile) return fail("internal_error", "Profile was not created", 500, requestId);
-  return ok({ profile: toMine(profile) }, requestId, 201);
+  return ok({ profile: toMine(profile, false) }, requestId, 201);
 }
 
 async function member(request: Request, env: Env, requestId: string): Promise<Response> {
@@ -150,8 +153,13 @@ async function member(request: Request, env: Env, requestId: string): Promise<Re
     return fail("unauthorized", "Sign in as a person", 401, requestId);
   }
 
-  const repo = createSocialRepository(createSqlExecutor(env.PLATFORM_DB!));
+  const executor = createSqlExecutor(env.PLATFORM_DB!);
+  const repo = createSocialRepository(executor);
+  const safety = createSafetyRepository(executor);
   const now = new Date().toISOString();
+
+  // Before anything else, so suspension also stops someone joining again.
+  if (await safety.isSuspended(userId)) return fail("suspended", "Your account has been suspended", 403, requestId);
 
   if (path === "/v1/social/me" && method === "POST") return createProfile(request, repo, userId, now, requestId);
 
@@ -160,14 +168,14 @@ async function member(request: Request, env: Env, requestId: string): Promise<Re
   if (!mine) return fail("profile_required", "Join with an invite first", 403, requestId);
 
   if (path === "/v1/social/me") {
-    if (method === "GET") return ok({ profile: toMine(mine) }, requestId);
+    if (method === "GET") return ok({ profile: toMine(mine, await isStaff(safety, userId, env)) }, requestId);
     if (method === "PATCH") {
       const parsed = await readJson(request);
       if (!parsed.ok) return fail("bad_request", "Body must be JSON", 400, requestId);
       const { fields, edit } = parseEdit(parsed.body, mine);
       if (Object.keys(fields).length > 0) return invalid(requestId, fields);
       await repo.updateProfile(userId, edit, now);
-      return ok({ profile: toMine((await repo.profileByUser(userId))!) }, requestId);
+      return ok({ profile: toMine((await repo.profileByUser(userId))!, await isStaff(safety, userId, env)) }, requestId);
     }
     return fail("method_not_allowed", "Method not allowed", 405, requestId);
   }
@@ -203,14 +211,15 @@ async function member(request: Request, env: Env, requestId: string): Promise<Re
   const personMatch = PERSON_RE.exec(path);
   if (personMatch && method === "GET") {
     const handle = decodeURIComponent(personMatch[1]!).toLowerCase();
-    if (handle === mine.handle) return ok({ profile: toMine(mine) }, requestId);
+    if (handle === mine.handle) return ok({ profile: toMine(mine, await isStaff(safety, userId, env)) }, requestId);
     const person = await repo.profileByHandle(handle);
     // A block reads exactly like the person not existing, in both directions.
     if (!person || (await repo.isBlockedEitherWay(userId, person.userId))) return notFound(requestId);
     return ok({ profile: await viewPerson(repo, userId, person) }, requestId);
   }
 
-  const executor = createSqlExecutor(env.PLATFORM_DB!);
+  const safetyResponse = await handleSafetyRoute(request, env, repo, safety, mine, now, requestId);
+  if (safetyResponse) return safetyResponse;
   const scrapbook = await handleScrapbookRoute(request, repo, createScrapbookRepository(executor), mine, now, requestId);
   if (scrapbook) return scrapbook;
   const community = await handleCommunityRoute(request, repo, createCommunityRepository(executor), mine, now, requestId);

@@ -32,7 +32,7 @@ export default function WelcomePage() {
   React.useEffect(() => {
     if (!ready) return;
     void wrap(() => client.social.me()).then((r) => {
-      if (r.ok) router.replace("/home");
+      if (r.ok || r.error.code === "suspended") router.replace("/home");
     });
   }, [ready, client, router]);
 

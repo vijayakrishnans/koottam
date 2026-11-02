@@ -16,6 +16,7 @@ export const qk = {
   socialFriendRequests: () => ["socialFriendRequests"] as const,
   socialBlocks: () => ["socialBlocks"] as const,
   socialHome: () => ["socialHome"] as const,
+  socialReports: () => ["socialReports"] as const,
   socialCommunities: (q: string) => ["socialCommunities", q] as const,
   socialPersonCommunities: (handle: string) => ["socialPersonCommunities", handle] as const,
   socialCommunity: (slug: string) => ["socialCommunity", slug] as const,

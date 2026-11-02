@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import type { PublicProfile, RatingValues } from "@saas/contracts/social";
+import { ReportButton } from "@/components/social/report-button";
 import { ScrapList } from "@/components/social/scrap-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -164,8 +165,10 @@ export function Testimonials({ profile }: { profile: PublicProfile }) {
                 {profile.isMe && t.status !== "hidden" && (
                   <Button size="sm" variant="ghost" disabled={busy} onClick={() => act(() => client.social.answerTestimonial(t.id, "hide"), refresh)}>Hide</Button>
                 )}
-                {t.mine && (
+                {t.mine ? (
                   <Button size="sm" variant="ghost" disabled={busy} onClick={() => act(() => client.social.deleteTestimonial(t.id), refresh)}>Delete</Button>
+                ) : (
+                  <ReportButton subjectType="testimonial" subjectId={t.id} />
                 )}
               </div>
             </li>
