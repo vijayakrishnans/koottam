@@ -1,6 +1,7 @@
 import type { ConnectionState, InviteStatus, InviteSummary, MyProfile, PublicProfile } from "@saas/contracts/social";
 import { createSqlExecutor } from "@saas/db/d1";
 import {
+  createCommunityRepository,
   createScrapbookRepository,
   createSocialRepository,
   type SocialInvite,
@@ -9,6 +10,7 @@ import {
 } from "@saas/db/social";
 import type { Env } from "./env.js";
 import { fail, invalid, notFound, ok } from "./http.js";
+import { handleCommunityRoute } from "./communities.js";
 import { handleFriendRoute } from "./friends.js";
 import { handleScrapbookRoute } from "./scrapbook.js";
 import { parseCreate, parseEdit } from "./validate.js";
@@ -210,7 +212,9 @@ async function member(request: Request, env: Env, requestId: string): Promise<Re
 
   const executor = createSqlExecutor(env.PLATFORM_DB!);
   const scrapbook = await handleScrapbookRoute(request, repo, createScrapbookRepository(executor), mine, now, requestId);
-  return scrapbook ?? handleFriendRoute(request, repo, mine, now, requestId);
+  if (scrapbook) return scrapbook;
+  const community = await handleCommunityRoute(request, repo, createCommunityRepository(executor), mine, now, requestId);
+  return community ?? handleFriendRoute(request, repo, mine, now, requestId);
 }
 
 export async function route(request: Request, env: Env): Promise<Response> {

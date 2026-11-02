@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import type { PublicProfile } from "@saas/contracts/social";
-import { Scrapbook, Standing, Testimonials } from "@/components/social/page-panels";
+import { PersonCommunities, Scrapbook, Standing, Testimonials } from "@/components/social/page-panels";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -161,6 +161,7 @@ export default function ProfilePage() {
     <div className="space-y-4">
     {!p.limited && <Standing profile={p} />}
     {!p.limited && <FriendsPanel handle={p.handle} />}
+    {!p.limited && <PersonCommunities handle={p.handle} />}
     </div>
     </div>
   );
