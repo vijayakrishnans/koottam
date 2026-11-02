@@ -10,7 +10,7 @@ As-built ≠ intent. This file records what actually shipped, and every place th
 | KT3 — scrapbook and testimonials | ✅ on stage, shown in a browser | #7, #8 |
 | KT4 — communities | ✅ on stage, shown in a browser | #9 |
 | KT5 — photos | Not started. Needs an R2 token created by the owner, so KT6 went first | |
-| KT6 — safety and the front door | Reports and moderation ✅ on stage. Rest in progress | #10, this PR |
+| KT6 — safety and the front door | ✅ on stage, except a stranger redeeming an invite on prod, which needs Google sign-in. Terms and privacy are unreviewed drafts | #10, #11, #12, this PR |
 
 ## Departures from the design
 
@@ -22,7 +22,7 @@ The first person on each environment joins with a founder invite whose hash ship
 
 ### Sign-in screens (KT-2)
 
-The baseline's paste-a-bearer-token path is removed from sign-in. Email codes are hidden on prod, where they cannot be delivered without a verified domain. Baseline console screens remain reachable by address until KT6.
+The baseline's paste-a-bearer-token path is removed from sign-in. Email codes are hidden on prod, where they cannot be delivered without a verified domain. Baseline console screens redirect to the home page since KT6.
 
 ### Signed-in access to profiles (KT-2)
 
@@ -53,6 +53,10 @@ The plan said a suspended person cannot sign in. The baseline's identity worker 
 ### Export and deletion as built (KT-9)
 
 Deletion removes the person's profile, friendships, scraps and testimonials in both directions, fans, ratings, posts, and the topics they started, with any replies in those topics. The identity row keeps only a tombstone, so the email is gone and signing in with it again starts from nothing. Their security log is deleted, their address is erased from the notification log, and their hidden personal organization, which is named after them, is renamed. Baseline audit tables are not touched; they key on an opaque actor id and hold no social content. Deletion is refused while others remain in a community they own, and for moderators, so Koottam can't be left with nobody to act on reports. A suspended person can't reach this, so their deletion requests go to a moderator. The edge caches sessions briefly, so the worker also refuses any session belonging to a deleted account (KT-10).
+
+### The front door as built (KT-11)
+
+The product now uses a warm light theme instead of the baseline's dark console, set by the theme tokens and the default theme. The landing page takes a pasted invite link or code. The terms and privacy pages are plain-language drafts and say so, with no contact details yet. The baseline's `/orgs`, `/account`, `/onboarding` and `/demo` redirect to the home page. Their code stays in the repository.
 
 ### Known issues
 

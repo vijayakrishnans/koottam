@@ -135,7 +135,7 @@ export default function LoginPage() {
                         label: "Email",
                         type: "email",
                         autoComplete: "email",
-                        placeholder: "you@company.com",
+                        placeholder: "you@example.com",
                       },
                     ]}
                     submitLabel="Send code"
@@ -227,7 +227,7 @@ export default function LoginPage() {
         </Card>
 
         <p className="text-center text-[11px] text-muted-foreground">
-          By signing in you agree to the Acceptable Use Policy.
+          By signing in you agree to the <a className="underline" href="/terms">Terms</a> and <a className="underline" href="/privacy">Privacy</a> notes.
         </p>
       </div>
     </div>

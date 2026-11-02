@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PublicFooter } from "@/components/social/public-footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { wrap } from "@/lib/api";
@@ -32,7 +33,7 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
   const requestsWaiting = counters.data?.friendRequests ?? 0;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <header className="border-b bg-card">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3">
           <Link href="/home" className="text-lg font-semibold tracking-tight text-primary">
@@ -65,7 +66,7 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
           </Button>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-6">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         {me.data ? (
           children
         ) : me.error?.code === "suspended" ? (
@@ -76,6 +77,7 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
           <Skeleton className="h-40 w-full" />
         )}
       </main>
+      <PublicFooter />
     </div>
   );
 }

@@ -94,7 +94,9 @@ export default function WelcomePage() {
                   checked={isAdult}
                   onChange={(e) => setIsAdult(e.target.checked)}
                 />
-                I am 18 or older.
+                <span>
+                  I am 18 or older and I agree to the <a className="underline" href="/terms" target="_blank" rel="noreferrer">Terms</a>.
+                </span>
               </label>
               {error("isAdult")}
             </div>

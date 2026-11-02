@@ -1,0 +1,16 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-11
+  title: "The front door: landing page, draft terms and Koottam's look"
+spec:
+  goal: A signed-out visitor can read what Koottam is, read its draft terms and privacy notes, and use an invite, in Koottam's own look.
+  affects:
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - A signed-out visitor sees the landing page and can continue with an invite, on stage and prod.
+    - Terms and privacy pages load signed out, and say they are drafts.
+    - The baseline's admin pages redirect to the home page.
+  gates: []

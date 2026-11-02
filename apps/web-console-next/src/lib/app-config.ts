@@ -40,7 +40,7 @@ const BUILD_DEPLOY_ENV: string | undefined =
 /** This tree's own identity: what a deploy with no runtime `vars` serves. */
 export const DEFAULT_APP_CONFIG: AppConfig = {
   productName: "koottam",
-  productDescription: "Next-gen control plane for your projects, environments, and entitlements.",
+  productDescription: "A small social network of pages, scrapbooks and communities",
   workersDevSubdomain: "vijayakrishnan12994",
   apiWorkerPrefix: "koottam-api-edge",
   storagePrefix: "koottam.next",
