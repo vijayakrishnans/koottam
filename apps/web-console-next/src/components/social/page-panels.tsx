@@ -77,6 +77,7 @@ export function Scrapbook({ profile }: { profile: PublicProfile }) {
               placeholder={profile.isMe ? "Leave a note on your page" : `Write to ${profile.displayName}`}
               value={body}
               onChange={(e) => setBody(e.target.value)}
+              disabled={busy}
             />
             <div className="flex flex-wrap items-center justify-between gap-2">
               <label className="flex items-center gap-2 text-sm">
@@ -138,6 +139,7 @@ export function Testimonials({ profile }: { profile: PublicProfile }) {
               placeholder={`What's ${profile.displayName} like? It appears once they approve it.`}
               value={body}
               onChange={(e) => setBody(e.target.value)}
+              disabled={busy}
             />
             <Button type="submit" size="sm" disabled={busy || !body.trim()}>Send testimonial</Button>
           </form>

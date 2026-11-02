@@ -7,7 +7,7 @@ As-built ≠ intent. This file records what actually shipped, and every place th
 | KT0 — the spec | ✅ | #3 |
 | KT1 — people | ✅ on stage, shown in a browser. Prod sign-in needs Google credentials from the owner | #4 |
 | KT2 — friends | ✅ on stage, shown in a browser, with blocking also proven by test | #5, this PR |
-| KT3 — scrapbook and testimonials | In progress | this PR |
+| KT3 — scrapbook and testimonials | ✅ on stage, shown in a browser | #7, this PR |
 | KT4 — communities | | |
 | KT5 — photos | | |
 | KT6 — safety and the front door | | |
@@ -41,6 +41,8 @@ The design let anyone write a scrap. Only friends can write scraps and testimoni
 Rating averages stay hidden until three people have rated, so nobody's rating can be worked out from them. One person can write one testimonial about another, and must delete it to write another. Scraps are limited to 60 an hour per person. Deleting a scrap also erases its text. A block removes fans and ratings between the two people.
 
 ### Known issues
+
+- CI lanes often fail on a first attempt with GitHub OIDC token errors or undelivered remote logs, and pass when re-run. No test has been the cause so far.
 
 - `/login` logs React hydration error #418. It comes from the baseline, because Earlywarn's sign-in page logs it too, and React recovers by rendering on the client. Not yet traced.
 - An action followed by its list refresh takes about 4 seconds on stage. Buttons now wait for it, but the cause is unmeasured and worth checking once there is real traffic.
