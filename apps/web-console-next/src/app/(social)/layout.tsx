@@ -19,7 +19,12 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
 
   React.useEffect(() => {
     if (me.error?.code === "profile_required") router.replace("/welcome");
-  }, [me.error, router]);
+    // A session that ended (signed out elsewhere, suspended, deleted) can only go back to sign-in.
+    if (me.error?.code === "unauthenticated") {
+      setToken(null);
+      router.replace("/login");
+    }
+  }, [me.error, router, setToken]);
 
   const handle = me.data?.profile.handle;
   const counters = useApiQuery(qk.socialCounters(), () => wrap(() => client.social.counters()), { enabled: !!handle });
@@ -65,7 +70,7 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
           children
         ) : me.error?.code === "suspended" ? (
           <p className="text-sm">Your account has been suspended, so you can't use Koottam.</p>
-        ) : me.error && me.error.code !== "profile_required" ? (
+        ) : me.error && me.error.code !== "profile_required" && me.error.code !== "unauthenticated" ? (
           <p className="text-sm text-destructive">Koottam couldn't load your profile. Please try again.</p>
         ) : (
           <Skeleton className="h-40 w-full" />

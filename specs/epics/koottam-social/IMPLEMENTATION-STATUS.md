@@ -10,7 +10,7 @@ As-built ≠ intent. This file records what actually shipped, and every place th
 | KT3 — scrapbook and testimonials | ✅ on stage, shown in a browser | #7, #8 |
 | KT4 — communities | ✅ on stage, shown in a browser | #9 |
 | KT5 — photos | Not started. Needs an R2 token created by the owner, so KT6 went first | |
-| KT6 — safety and the front door | In progress | this PR |
+| KT6 — safety and the front door | Reports and moderation ✅ on stage. Rest in progress | #10, this PR |
 
 ## Departures from the design
 
@@ -49,6 +49,10 @@ Rating averages stay hidden until three people have rated, so nobody's rating ca
 Moderators are whoever spent the founder invite, plus anyone in `social_staff`. Stage's test invite also counts, but on stage only. A report keeps a copy of the content so that deleting it doesn't escape review, and the copy is erased on resolve. Resolving closes every open report on the same thing.
 
 The plan said a suspended person cannot sign in. The baseline's identity worker doesn't check account status at login, and this change leaves it alone. Suspension ends their sessions and marks the account, and every social route then refuses them, so they can reach nothing even though a new sign-in succeeds. Moderation decisions are recorded on the report and suspension rows, not in the baseline audit log.
+
+### Export and deletion as built (KT-9)
+
+Deletion removes the person's profile, friendships, scraps and testimonials in both directions, fans, ratings, posts, and the topics they started, with any replies in those topics. The identity row keeps only a tombstone, so the email is gone and signing in with it again starts from nothing. Their security log is deleted, their address is erased from the notification log, and their hidden personal organization, which is named after them, is renamed. Baseline audit tables are not touched; they key on an opaque actor id and hold no social content. Deletion is refused while others remain in a community they own, and for moderators, so Koottam can't be left with nobody to act on reports. A suspended person can't reach this, so their deletion requests go to a moderator.
 
 ### Known issues
 

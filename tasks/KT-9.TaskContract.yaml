@@ -1,0 +1,20 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-9
+  title: "Data export, account deletion and ended sessions"
+spec:
+  goal: A person can take a copy of their data and delete their account, including their email address, and an ended session returns them to sign-in.
+  affects:
+    - default/koottam/db
+    - default/koottam/sdk
+    - default/koottam/social-worker
+    - default/koottam/social-worker-tests
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - Export returns a person's own data as JSON, by test.
+    - Deletion removes their profile, content and email address, by test across every table holding them.
+    - On stage, a person deletes their account and is returned to sign-in, and signing in again needs a new invite.
+  gates: []
