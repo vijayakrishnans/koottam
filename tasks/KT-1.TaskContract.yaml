@@ -1,0 +1,14 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-1
+  title: "The Koottam epic doc set"
+spec:
+  goal: The Koottam epic doc set is reviewed and on main as the design of record.
+  affects:
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - The five epic documents are on main.
+    - task_get koottam-social shows the epic with milestones KT0 to KT6.
+  gates: []
