@@ -1,0 +1,28 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-2
+  title: "People: invites, profiles and the social worker"
+spec:
+  goal: An invited person can sign in, make a profile and be seen at their handle, on a new social-worker reached through the edge.
+  affects:
+    - default/koottam/api-edge
+    - default/koottam/api-edge-tests
+    - default/koottam/contracts
+    - default/koottam/db
+    - default/koottam/db-migrate
+    - default/koottam/db-tests
+    - default/koottam/sdk
+    - default/koottam/social-worker
+    - default/koottam/social-worker-tests
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+    - pnpm-lock.yaml
+    - .gitignore
+  doneWhen:
+    - social-worker answers through the edge on stage and prod.
+    - Migration 200 is applied on stage and prod.
+    - Without a valid invite no profile is created, by test.
+    - On stage, a person redeems an invite, signs in, edits a profile and it shows at its handle.
+  gates: []

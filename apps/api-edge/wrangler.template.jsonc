@@ -98,6 +98,10 @@
         {
           "binding": "INTEGRATIONS_WORKER",
           "service": "koottam-integrations-worker-stage"
+        },
+        {
+          "binding": "SOCIAL_WORKER",
+          "service": "koottam-social-worker-stage"
         }
       ],
       "durable_objects": {
@@ -168,6 +172,10 @@
         {
           "binding": "INTEGRATIONS_WORKER",
           "service": "koottam-integrations-worker-prod"
+        },
+        {
+          "binding": "SOCIAL_WORKER",
+          "service": "koottam-social-worker-prod"
         }
       ],
       "durable_objects": {

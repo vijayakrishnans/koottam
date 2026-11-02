@@ -9,9 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/lib/session";
-import { resolvePostAuthDestination } from "@/lib/last-org";
-import { wrap, createClient } from "@/lib/api";
-import { consoleTitle } from "@/lib/app-config";
+import { wrap } from "@/lib/api";
+import { appConfig } from "@/lib/app-config";
 import { useToast } from "@/components/ui/toast";
 import { ZodForm } from "@/components/ui/zod-form";
 import type { OAuthProviderInfo } from "@saas/contracts/auth";
@@ -38,7 +37,9 @@ const PROVIDER_ICONS: Record<string, React.ReactNode> = {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { client, target, availableTargets, setTarget, setToken, isLocked } = useSession();
+  const { client, target, availableTargets, setTarget, setToken, isLocked, deployEnv } = useSession();
+  // Email codes need a verified sending domain, which prod does not have yet.
+  const emailCodes = deployEnv !== "prod";
   const { toast } = useToast();
   const [stage, setStage] = React.useState<"email" | "code">("email");
   const [challengeId, setChallengeId] = React.useState<string | null>(null);
@@ -46,8 +47,7 @@ export default function LoginPage() {
   const [debugCode, setDebugCode] = React.useState<string | null>(null);
   const [code, setCode] = React.useState("");
   const [busy, setBusy] = React.useState(false);
-  const [tokenInput, setTokenInput] = React.useState("");
-  const [oauthProviders, setOauthProviders] = React.useState<OAuthProviderInfo[]>([]);
+    const [oauthProviders, setOauthProviders] = React.useState<OAuthProviderInfo[]>([]);
 
   // Discover configured OAuth providers so we only render buttons that work.
   React.useEffect(() => {
@@ -74,20 +74,17 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-4">
         <div className="flex items-center gap-3">
           <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-primary to-primary/40 grid place-items-center text-primary-foreground font-bold">
-            S
+            K
           </div>
           <div>
-            <div className="text-base font-semibold tracking-tight">{consoleTitle()}</div>
-            <div className="text-xs text-muted-foreground">
-              {isLocked ? `locked to ${target.name}` : `target: ${target.name}`}
-            </div>
+            <div className="text-base font-semibold tracking-tight">{appConfig().productName}</div>
           </div>
         </div>
 
         <Card className="animate-fade-in">
           <CardHeader>
             <CardTitle>Sign in</CardTitle>
-            <CardDescription>Use email code or paste a bearer token for prod testing.</CardDescription>
+            <CardDescription>Your invite is applied once you are signed in.</CardDescription>
           </CardHeader>
           <CardContent>
             {oauthProviders.length > 0 && (
@@ -103,7 +100,7 @@ export default function LoginPage() {
                     Continue with {p.displayName}
                   </Button>
                 ))}
-                <div className="relative py-1">
+                {emailCodes && <div className="relative py-1">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                   </div>
@@ -112,13 +109,16 @@ export default function LoginPage() {
                       or
                     </span>
                   </div>
-                </div>
+                </div>}
               </div>
             )}
+            {!emailCodes && oauthProviders.length === 0 && (
+              <p className="text-sm text-muted-foreground">Sign-in isn't available yet. Please check back soon.</p>
+            )}
+            {emailCodes && (
             <Tabs defaultValue="email" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-1">
                 <TabsTrigger value="email">Email code</TabsTrigger>
-                <TabsTrigger value="token">Bearer token</TabsTrigger>
               </TabsList>
 
               <TabsContent value="email" className="space-y-3 pt-2">
@@ -191,9 +191,7 @@ export default function LoginPage() {
                           }
                           setToken(r.data.token);
                           toast({ kind: "success", title: "Signed in" });
-                          router.push(
-                            await resolvePostAuthDestination(createClient(target, r.data.token)),
-                          );
+                          router.push("/home");
                         }}
                       >
                         Sign in
@@ -202,36 +200,8 @@ export default function LoginPage() {
                   </div>
                 )}
               </TabsContent>
-
-              <TabsContent value="token" className="space-y-3 pt-2">
-                <div className="space-y-1.5">
-                  <Label htmlFor="bearer">Bearer token</Label>
-                  <Input
-                    id="bearer"
-                    type="password"
-                    placeholder="paste prod token…"
-                    value={tokenInput}
-                    onChange={(e) => setTokenInput(e.target.value)}
-                  />
-                  <p className="text-[11px] text-muted-foreground">
-                    Stored locally only. Use this path for prod parity testing.
-                  </p>
-                </div>
-                <Button
-                  className="w-full"
-                  disabled={!tokenInput}
-                  onClick={async () => {
-                    setToken(tokenInput);
-                    toast({ kind: "success", title: "Token set" });
-                    router.push(
-                      await resolvePostAuthDestination(createClient(target, tokenInput)),
-                    );
-                  }}
-                >
-                  Continue
-                </Button>
-              </TabsContent>
             </Tabs>
+            )}
 
             {!isLocked && availableTargets.length > 1 && (
               <div className="mt-4 border-t pt-3 space-y-1.5">

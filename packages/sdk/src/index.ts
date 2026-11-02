@@ -13,6 +13,7 @@
 import { ApiKeysClient } from "./apiKeys.js";
 import { AuthClient } from "./auth.js";
 import { IntegrationsClient } from "./integrations.js";
+import { SocialClient } from "./social.js";
 import { BillingClient } from "./billing.js";
 import { ConfigClient } from "./config.js";
 import { EnvironmentsClient } from "./environments.js";
@@ -41,6 +42,7 @@ export class Koottam {
   readonly notifications: NotificationsClient;
   readonly auth: AuthClient;
   readonly integrations: IntegrationsClient;
+  readonly social: SocialClient;
   /** Underlying HTTP transport. Exposed for advanced extension. */
   readonly transport: Transport;
 
@@ -60,6 +62,7 @@ export class Koottam {
     this.notifications = new NotificationsClient(this.transport);
     this.auth = new AuthClient(this.transport);
     this.integrations = new IntegrationsClient(this.transport);
+    this.social = new SocialClient(this.transport);
   }
 }
 

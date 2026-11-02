@@ -183,5 +183,14 @@ export const manifest: MigrationManifest = {
       description:
         "Connection pointer on the inbound-delivery inbox (nullable connection_id + partial index) — lets the per-connection delivery log scope precisely; attributed by the IG2 cron drain",
     },
+    {
+      id: "200_social_people",
+      context: "social",
+      path: "200_social_people/up.sql",
+      checksum:
+        "39c1fd1f4a32b1cf43da6e112df18801e7ffa1f5e005e8320c14b8a027170cca",
+      description:
+        "Koottam people — profiles and single-use invites, with the founder invite's hash",
+    },
   ],
 };

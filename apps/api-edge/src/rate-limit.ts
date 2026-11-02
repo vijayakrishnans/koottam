@@ -57,7 +57,9 @@ export type RouteFamily =
   | "billing"
   | "audit"
   | "notifications"
-  | "integrations";
+  | "integrations"
+  | "social"
+  | "social_public";
 
 interface BucketLimits {
   /** Bucket capacity (max tokens). */
@@ -118,6 +120,15 @@ const LIMITS: Record<RouteFamily, FamilyConfig> = {
   },
   integrations: {
     identity: { limit: 60, windowSec: 60 },
+    org: { limit: 300, windowSec: 60 },
+  },
+  social: {
+    identity: { limit: 120, windowSec: 60 },
+    org: { limit: 300, windowSec: 60 },
+  },
+  // No session: per IP, tight enough that guessing invite codes gets nowhere.
+  social_public: {
+    identity: { limit: 20, windowSec: 60 },
     org: { limit: 300, windowSec: 60 },
   },
 };
