@@ -1,0 +1,14 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-12
+  title: "Point the web app's smoke test at the landing page"
+spec:
+  goal: The web app's smoke test checks the new landing page, so the front door reaches prod.
+  affects:
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - The stage smoke test passes and prod serves the landing page.
+  gates: []
