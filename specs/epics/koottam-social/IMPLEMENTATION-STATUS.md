@@ -9,8 +9,17 @@ As-built ≠ intent. This file records what actually shipped, and every place th
 | KT2 — friends | ✅ on stage, shown in a browser, with blocking also proven by test | #5, #6 |
 | KT3 — scrapbook and testimonials | ✅ on stage, shown in a browser | #7, #8 |
 | KT4 — communities | ✅ on stage, shown in a browser | #9 |
-| KT5 — photos | Not started. Needs an R2 token created by the owner, so KT6 went first | |
-| KT6 — safety and the front door | ✅ on stage, except a stranger redeeming an invite on prod, which needs Google sign-in. Terms and privacy are unreviewed drafts | #10, #11, #12, #13, this PR |
+| KT5 — photos | Not started. Needs a brokered R2 token created by the owner, so KT6 went first | |
+| KT6 — safety and the front door | ✅ on stage, except a stranger redeeming an invite on prod, which needs Google sign-in. Terms and privacy are unreviewed drafts | #10, #11, #12, #13, #14 |
+
+## What blocks release
+
+1. **Google sign-in on prod.** Nobody can sign in on prod until the owner creates a Google OAuth client and seeds its secrets. The client IDs in the identity worker's template came with the baseline and must be replaced. The founder invite is unspent on prod.
+2. **The R2 token for KT5.** Creating it needs the owner: `orun integrations cloudflare secret create CLOUDFLARE_R2_TOKEN --connection <int_…> --template r2-data --mode brokered --project`.
+3. **The license.** The repository has none. `cirrus-baseline` has no license file, so whether its code can go out as Apache 2.0 is the copyright holders' decision.
+4. **A lawyer's review** of the terms and privacy drafts and of illegal-content duties, plus contact details, before opening beyond a test group (KT-A, KT-G).
+
+Stage returns sign-in codes in API responses and must not hold real data. It holds test accounts only.
 
 ## Departures from the design
 
@@ -32,7 +41,7 @@ Only members with a profile can read pages. A friends-only page shows only its c
 
 Beyond the design: a sender can cancel a request, and asking someone who has already asked you counts as accepting. Blocking cancels pending requests in both directions.
 
-Migration 210 also holds the hash of a test invite that expires on 4 November 2026. It exists because the first stage test spent stage's founder invite. It reaches prod too, unused, and its code is known only to the session that made it.
+Migration 210 also holds the hash of a test invite that expires on 4 November 2026. It exists because the first stage test spent stage's founder invite. It reaches prod too, unused, and has now expired or will on that date. Stage's founder invite was spent by a test account whose login was lost, so that account remains on stage.
 
 ### Scrapbook as built (KT-5)
 

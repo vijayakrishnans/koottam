@@ -1,0 +1,13 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-13
+  title: "Record what shipped and what blocks release"
+spec:
+  goal: The epic's documents say exactly what is proven, where, and what blocks release.
+  affects:
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - The status file lists what blocks release, and the plan marks each milestone's real state.
+  gates: []
