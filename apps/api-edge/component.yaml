@@ -49,6 +49,7 @@ spec:
     - component: metering-worker
     - component: notifications-worker
     - component: policy-worker
+    - component: social-worker
       mode: enforced
       modeRules:
         - mode: advisory

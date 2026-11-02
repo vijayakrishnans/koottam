@@ -1,3 +1,4 @@
+import { handlePublicSocialRoute, handleSocialRoute, isPublicSocialRoute, isSocialRoute } from "./social-facade";
 import { createD1Adapter } from "@saas/db/d1";
 import type { HealthStatus } from "@saas/contracts/health";
 import type { Env } from "./env";
@@ -44,6 +45,10 @@ export default {
       // reads as "not found" to the single-user surface. Flip SOLO_MODE off and
       // this branch is dead, restoring the full baseline. (See ./solo-mode.ts.)
       response = notFound(requestId, url.pathname);
+    } else if (isPublicSocialRoute(url.pathname, request.method)) {
+      response = await handlePublicSocialRoute(request, env, requestId, url.pathname);
+    } else if (isSocialRoute(url.pathname)) {
+      response = await handleSocialRoute(request, env, requestId, url.pathname);
     } else if (isAuthRoute(url.pathname)) {
       response = await handleAuthRoute(request, env, requestId, url.pathname);
     } else if (isAuditRoute(url.pathname)) {
