@@ -6,9 +6,9 @@ As-built ≠ intent. This file records what actually shipped, and every place th
 |---|---|---|
 | KT0 — the spec | ✅ | #3 |
 | KT1 — people | ✅ on stage, shown in a browser. Prod sign-in needs Google credentials from the owner | #4 |
-| KT2 — friends | ✅ on stage, shown in a browser, with blocking also proven by test | #5, this PR |
-| KT3 — scrapbook and testimonials | ✅ on stage, shown in a browser | #7, this PR |
-| KT4 — communities | | |
+| KT2 — friends | ✅ on stage, shown in a browser, with blocking also proven by test | #5, #6 |
+| KT3 — scrapbook and testimonials | ✅ on stage, shown in a browser | #7, #8 |
+| KT4 — communities | In progress | this PR |
 | KT5 — photos | | |
 | KT6 — safety and the front door | | |
 
@@ -39,6 +39,10 @@ Migration 210 also holds the hash of a test invite that expires on 4 November 20
 The design let anyone write a scrap. Only friends can write scraps and testimonials or give ratings, because that removes most harassment from strangers. Anyone can become a fan.
 
 Rating averages stay hidden until three people have rated, so nobody's rating can be worked out from them. One person can write one testimonial about another, and must delete it to write another. Scraps are limited to 60 an hour per person. Deleting a scrap also erases its text. A block removes fans and ratings between the two people.
+
+### Communities as built (KT-7)
+
+`member_count` is counted when read instead of stored, so it can't drift. Topics can also be locked, and owners can delete a community, which the design didn't list. A community's forum is readable by any signed-in member when it's open and only by its members when it needs approval. Blocked people don't see each other's topics, posts or membership, including inside a community they share. People can own 20 communities and write 60 forum posts an hour. Leaving doesn't lift a ban.
 
 ### Known issues
 

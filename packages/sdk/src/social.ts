@@ -1,6 +1,10 @@
 import type {
   CreateInviteResponse,
+  CommunitiesResponse,
+  CommunityMembersResponse,
+  CommunityResponse,
   CountersResponse,
+  CreateCommunityRequest,
   CreateProfileRequest,
   CreateScrapRequest,
   FriendsResponse,
@@ -8,6 +12,7 @@ import type {
   HomeResponse,
   ListFriendRequestsResponse,
   ListInvitesResponse,
+  MemberAction,
   MyProfileResponse,
   PeopleResponse,
   RatingValues,
@@ -16,6 +21,8 @@ import type {
   StandingResponse,
   Testimonial,
   TestimonialsResponse,
+  TopicResponse,
+  TopicsResponse,
   PublicProfileResponse,
   UpdateProfileRequest,
 } from "@saas/contracts/social";
@@ -153,5 +160,72 @@ export class SocialClient {
 
   rate(handle: string, body: RatingValues, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
     return this.transport.request({ method: "PUT", path: `/v1/social/people/${encodeURIComponent(handle)}/rating`, body }, opts);
+  }
+
+  communities(q = "", opts: RequestOptions = {}): Promise<CommunitiesResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/communities?q=${encodeURIComponent(q)}` }, opts);
+  }
+
+  personCommunities(handle: string, opts: RequestOptions = {}): Promise<CommunitiesResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/people/${encodeURIComponent(handle)}/communities` }, opts);
+  }
+
+  createCommunity(body: CreateCommunityRequest, opts: RequestOptions = {}): Promise<CommunityResponse> {
+    return this.transport.request({ method: "POST", path: "/v1/social/communities", body }, opts);
+  }
+
+  community(slug: string, opts: RequestOptions = {}): Promise<CommunityResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/communities/${encodeURIComponent(slug)}` }, opts);
+  }
+
+  deleteCommunity(slug: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "DELETE", path: `/v1/social/communities/${encodeURIComponent(slug)}` }, opts);
+  }
+
+  joinCommunity(slug: string, opts: RequestOptions = {}): Promise<{ status: string }> {
+    return this.transport.request({ method: "POST", path: `/v1/social/communities/${encodeURIComponent(slug)}/join`, body: {} }, opts);
+  }
+
+  leaveCommunity(slug: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "POST", path: `/v1/social/communities/${encodeURIComponent(slug)}/leave`, body: {} }, opts);
+  }
+
+  communityMembers(slug: string, opts: RequestOptions = {}): Promise<CommunityMembersResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/communities/${encodeURIComponent(slug)}/members` }, opts);
+  }
+
+  memberAction(slug: string, handle: string, action: MemberAction, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request(
+      { method: "POST", path: `/v1/social/communities/${encodeURIComponent(slug)}/members/${encodeURIComponent(handle)}/${action}`, body: {} },
+      opts,
+    );
+  }
+
+  topics(slug: string, opts: RequestOptions = {}): Promise<TopicsResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/communities/${encodeURIComponent(slug)}/topics` }, opts);
+  }
+
+  createTopic(slug: string, body: { title: string; body: string }, opts: RequestOptions = {}): Promise<{ id: string }> {
+    return this.transport.request({ method: "POST", path: `/v1/social/communities/${encodeURIComponent(slug)}/topics`, body }, opts);
+  }
+
+  topic(id: string, opts: RequestOptions = {}): Promise<TopicResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/topics/${encodeURIComponent(id)}` }, opts);
+  }
+
+  reply(id: string, body: string, opts: RequestOptions = {}): Promise<{ id: string }> {
+    return this.transport.request({ method: "POST", path: `/v1/social/topics/${encodeURIComponent(id)}/posts`, body: { body } }, opts);
+  }
+
+  setTopicLocked(id: string, locked: boolean, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "POST", path: `/v1/social/topics/${encodeURIComponent(id)}/${locked ? "lock" : "unlock"}`, body: {} }, opts);
+  }
+
+  deleteTopic(id: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "DELETE", path: `/v1/social/topics/${encodeURIComponent(id)}` }, opts);
+  }
+
+  deletePost(id: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "DELETE", path: `/v1/social/posts/${encodeURIComponent(id)}` }, opts);
   }
 }

@@ -240,3 +240,26 @@ export function Standing({ profile }: { profile: PublicProfile }) {
     </Card>
   );
 }
+
+export function PersonCommunities({ handle }: { handle: string }) {
+  const { client } = useSession();
+  const list = useApiQuery(qk.socialPersonCommunities(handle), () => wrap(() => client.social.personCommunities(handle)));
+  const items = list.data?.communities ?? [];
+  if (items.length === 0) return null;
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Communities ({items.length})</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-1 text-sm">
+          {items.map((c) => (
+            <li key={c.slug}>
+              <Link className="text-primary hover:underline" href={`/communities/${c.slug}`}>{c.name}</Link>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+  );
+}

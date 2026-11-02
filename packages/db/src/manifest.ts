@@ -210,5 +210,14 @@ export const manifest: MigrationManifest = {
       description:
         "Koottam scrapbook — scraps, testimonials awaiting approval, fans and ratings",
     },
+    {
+      id: "230_social_communities",
+      context: "social",
+      path: "230_social_communities/up.sql",
+      checksum:
+        "40895a1dd19c37f0405e93f515049d139e9fbfe020208bf6cc7edec475071ff2",
+      description:
+        "Koottam communities — communities, membership with roles, forum topics and posts",
+    },
   ],
 };

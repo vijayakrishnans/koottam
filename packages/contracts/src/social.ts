@@ -175,3 +175,79 @@ export interface CountersResponse {
   testimonials: number;
   scraps: number;
 }
+
+export type JoinPolicy = "open" | "approval";
+export type CommunityRole = "owner" | "moderator" | "member";
+export type MemberStatus = "active" | "pending" | "banned";
+
+export interface CommunitySummary {
+  slug: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  joinPolicy: JoinPolicy;
+  members: number;
+}
+
+export interface CommunityDetail extends CommunitySummary {
+  owner: PublicProfileCard | null;
+  myRole: CommunityRole | null;
+  myStatus: MemberStatus | null;
+  /** Non-members of an approval community can't read its forum. */
+  canRead: boolean;
+  canPost: boolean;
+  canModerate: boolean;
+}
+
+export interface CommunitiesResponse {
+  communities: CommunitySummary[];
+}
+
+export interface CommunityResponse {
+  community: CommunityDetail;
+}
+
+export interface CreateCommunityRequest {
+  slug: string;
+  name: string;
+  description?: string | null;
+  category?: string | null;
+  joinPolicy?: JoinPolicy;
+}
+
+export interface CommunityMember extends PublicProfileCard {
+  role: CommunityRole;
+  status: MemberStatus;
+}
+
+export interface CommunityMembersResponse {
+  members: CommunityMember[];
+}
+
+export type MemberAction = "approve" | "ban" | "unban" | "make-moderator" | "make-member" | "make-owner";
+
+export interface TopicSummary {
+  id: string;
+  title: string;
+  author: PublicProfileCard;
+  locked: boolean;
+  replies: number;
+  lastPostAt: string;
+}
+
+export interface TopicsResponse {
+  topics: TopicSummary[];
+}
+
+export interface Post {
+  id: string;
+  author: PublicProfileCard;
+  body: string;
+  createdAt: string;
+  canDelete: boolean;
+}
+
+export interface TopicResponse {
+  topic: TopicSummary & { communitySlug: string; communityName: string; canPost: boolean; canModerate: boolean };
+  posts: Post[];
+}

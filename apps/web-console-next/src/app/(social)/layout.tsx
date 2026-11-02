@@ -43,6 +43,7 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
             <Link href="/friends" className="hover:underline">
               Friends{requestsWaiting > 0 && <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{requestsWaiting}</span>}
             </Link>
+            <Link href="/communities" className="hover:underline">Communities</Link>
             <Link href="/invites" className="hover:underline">Invites</Link>
             <Link href="/settings" className="hover:underline">Settings</Link>
           </nav>

@@ -1,0 +1,24 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-7
+  title: "Communities, forums and moderators"
+spec:
+  goal: Members can create and join communities, talk in their forums, and moderators can remove posts and ban members.
+  affects:
+    - default/koottam/contracts
+    - default/koottam/db
+    - default/koottam/db-migrate
+    - default/koottam/db-tests
+    - default/koottam/sdk
+    - default/koottam/social-worker
+    - default/koottam/social-worker-tests
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - On stage, one person creates a community, another joins and starts a topic, and a third replies.
+    - Non-members cannot post, by test.
+    - A moderator removes a post and bans a member, and both take effect immediately.
+    - A person's block still applies inside a community forum.
+  gates: []
