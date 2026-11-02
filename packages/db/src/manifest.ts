@@ -192,5 +192,14 @@ export const manifest: MigrationManifest = {
       description:
         "Koottam people — profiles and single-use invites, with the founder invite's hash",
     },
+    {
+      id: "210_social_friends",
+      context: "social",
+      path: "210_social_friends/up.sql",
+      checksum:
+        "3103081fa3e642ee14a1cf467648a80d7a7a6623de3db956941ea10caaaa492e",
+      description:
+        "Koottam friends — friend requests, symmetric friendships and blocks, with a short-lived stage test invite's hash",
+    },
   ],
 };

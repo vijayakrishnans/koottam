@@ -33,6 +33,7 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
           <nav className="flex flex-1 flex-wrap items-center gap-x-4 gap-y-1 text-sm">
             <Link href="/home" className="hover:underline">Home</Link>
             {handle && <Link href={`/u/${handle}`} className="hover:underline">Profile</Link>}
+            <Link href="/friends" className="hover:underline">Friends</Link>
             <Link href="/invites" className="hover:underline">Invites</Link>
             <Link href="/settings" className="hover:underline">Settings</Link>
           </nav>

@@ -1,9 +1,12 @@
 import type {
   CreateInviteResponse,
   CreateProfileRequest,
+  FriendsResponse,
   InviteCheckResponse,
+  ListFriendRequestsResponse,
   ListInvitesResponse,
   MyProfileResponse,
+  PeopleResponse,
   PublicProfileResponse,
   UpdateProfileRequest,
 } from "@saas/contracts/social";
@@ -44,5 +47,48 @@ export class SocialClient {
 
   person(handle: string, opts: RequestOptions = {}): Promise<PublicProfileResponse> {
     return this.transport.request({ method: "GET", path: `/v1/social/people/${encodeURIComponent(handle)}` }, opts);
+  }
+
+  search(q: string, opts: RequestOptions = {}): Promise<PeopleResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/search?q=${encodeURIComponent(q)}` }, opts);
+  }
+
+  friendRequests(opts: RequestOptions = {}): Promise<ListFriendRequestsResponse> {
+    return this.transport.request({ method: "GET", path: "/v1/social/friend-requests" }, opts);
+  }
+
+  sendFriendRequest(handle: string, opts: RequestOptions = {}): Promise<{ connection: string }> {
+    return this.transport.request({ method: "POST", path: "/v1/social/friend-requests", body: { handle } }, opts);
+  }
+
+  answerFriendRequest(id: string, answer: "accept" | "decline", opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request(
+      { method: "POST", path: `/v1/social/friend-requests/${encodeURIComponent(id)}/${answer}`, body: {} },
+      opts,
+    );
+  }
+
+  cancelFriendRequest(id: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "DELETE", path: `/v1/social/friend-requests/${encodeURIComponent(id)}` }, opts);
+  }
+
+  friends(handle: string, opts: RequestOptions = {}): Promise<FriendsResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/people/${encodeURIComponent(handle)}/friends` }, opts);
+  }
+
+  unfriend(handle: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "DELETE", path: `/v1/social/friends/${encodeURIComponent(handle)}` }, opts);
+  }
+
+  blocks(opts: RequestOptions = {}): Promise<PeopleResponse> {
+    return this.transport.request({ method: "GET", path: "/v1/social/blocks" }, opts);
+  }
+
+  block(handle: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "PUT", path: `/v1/social/blocks/${encodeURIComponent(handle)}`, body: {} }, opts);
+  }
+
+  unblock(handle: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "DELETE", path: `/v1/social/blocks/${encodeURIComponent(handle)}` }, opts);
   }
 }

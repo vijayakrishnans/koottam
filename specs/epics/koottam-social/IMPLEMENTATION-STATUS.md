@@ -5,8 +5,8 @@ As-built ≠ intent. This file records what actually shipped, and every place th
 | Milestone | State | PR |
 |---|---|---|
 | KT0 — the spec | ✅ | #3 |
-| KT1 — people | Stage in progress. Prod sign-in needs Google credentials | this PR |
-| KT2 — friends | | |
+| KT1 — people | Joining and profile creation proven on stage; proof continues with the KT2 test accounts. Prod sign-in needs Google credentials | #4 |
+| KT2 — friends | In progress | this PR |
 | KT3 — scrapbook and testimonials | | |
 | KT4 — communities | | |
 | KT5 — photos | | |
@@ -27,3 +27,9 @@ The baseline's paste-a-bearer-token path is removed from sign-in. Email codes ar
 ### Signed-in access to profiles (KT-2)
 
 Only members with a profile can read pages. A friends-only page shows only its card to everyone else until KT2 adds friendships.
+
+### Friends as built (KT-3)
+
+Beyond the design: a sender can cancel a request, and asking someone who has already asked you counts as accepting. Blocking cancels pending requests in both directions.
+
+Migration 210 also holds the hash of a test invite that expires on 4 November 2026. It exists because the first stage test spent stage's founder invite. It reaches prod too, unused, and its code is known only to the session that made it.
