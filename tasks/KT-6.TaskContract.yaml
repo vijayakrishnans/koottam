@@ -1,0 +1,14 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-6
+  title: "Don't lose text typed while a scrap is saving"
+spec:
+  goal: Text typed while a scrap or testimonial is saving can't be lost, because the box is locked until saving finishes.
+  affects:
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - The scrap and testimonial boxes are disabled while saving.
+  gates: []
