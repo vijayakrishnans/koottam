@@ -35,6 +35,11 @@ export function createSafetyRepository(sql: SqlExecutor) {
       return !!(await one("SELECT 1 AS ok FROM social_suspensions WHERE user_id = $1", [userId]));
     },
 
+    /** The edge caches sessions briefly, so a deleted person's token can still arrive here. */
+    async isDeletedAccount(userId: string): Promise<boolean> {
+      return !!(await one("SELECT 1 AS ok FROM identity_users WHERE id = $1 AND status = 'deleted'", [identityUserId(userId)]));
+    },
+
     async isListedStaff(userId: string): Promise<boolean> {
       return !!(await one("SELECT 1 AS ok FROM social_staff WHERE user_id = $1", [userId]));
     },

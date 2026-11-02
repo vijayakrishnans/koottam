@@ -33,8 +33,12 @@ export default function WelcomePage() {
     if (!ready) return;
     void wrap(() => client.social.me()).then((r) => {
       if (r.ok || r.error.code === "suspended") router.replace("/home");
+      else if (r.error.code === "unauthenticated") {
+        setToken(null);
+        router.replace("/login");
+      }
     });
-  }, [ready, client, router]);
+  }, [ready, client, router, setToken]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

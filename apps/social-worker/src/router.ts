@@ -162,10 +162,12 @@ async function member(request: Request, env: Env, requestId: string): Promise<Re
   // Before anything else, so suspension also stops someone joining again.
   if (await safety.isSuspended(userId)) return fail("suspended", "Your account has been suspended", 403, requestId);
 
+  const mine = await repo.profileByUser(userId);
+  if (!mine && (await safety.isDeletedAccount(userId))) return fail("unauthenticated", "Please sign in", 401, requestId);
+
   if (path === "/v1/social/me" && method === "POST") return createProfile(request, repo, userId, now, requestId);
 
   // Everything below needs a profile: that is what an invite buys.
-  const mine = await repo.profileByUser(userId);
   if (!mine) return fail("profile_required", "Join with an invite first", 403, requestId);
 
   if (path === "/v1/social/me") {
