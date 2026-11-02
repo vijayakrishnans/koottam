@@ -99,8 +99,6 @@ function FriendsPanel({ handle }: { handle: string }) {
         )}
       </CardContent>
     </Card>
-    {!p.limited && <FriendsPanel handle={p.handle} />}
-    </div>
   );
 }
 
