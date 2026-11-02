@@ -2,7 +2,7 @@
 
 Milestones land in order. Each is one or more tasks, each task one pull request. A milestone is marked ✅ here when its "done when" list is true, and recorded in `IMPLEMENTATION-STATUS.md`.
 
-## KT0 — the spec
+## KT0 — the spec ✅
 
 This doc set, merged to `main`.
 
@@ -10,7 +10,7 @@ This doc set, merged to `main`.
 - the five documents are on `main`
 - `task_get koottam-social` shows the epic with milestones KT0 to KT6
 
-## KT1 — people
+## KT1 — people — stage ✅, prod needs Google sign-in
 
 Adds `social-worker` and its route through `api-edge`, the profile and invite migrations, Google sign-in configuration, the 18+ declaration, and the profile and settings screens. Replaces the console's landing route.
 
@@ -20,7 +20,7 @@ Adds `social-worker` and its route through `api-edge`, the profile and invite mi
 - on prod, the same works through Google sign-in (needs the owner's OAuth credentials)
 - stage and prod `/health` answer through the edge for `social-worker`
 
-## KT2 — friends
+## KT2 — friends ✅ on stage
 
 Requests, accept and decline, friend lists, mutual friends, search by name and handle, and blocking.
 
@@ -29,7 +29,7 @@ Requests, accept and decline, friend lists, mutual friends, search by name and h
 - after a block, neither person can see or write to the other, by test for every route that exists so far
 - friendship rows are symmetric and unique, by test
 
-## KT3 — scrapbook and testimonials
+## KT3 — scrapbook and testimonials ✅ on stage
 
 Scraps with visibility, the home page in time order, testimonials with approval, fans, three ratings, in-app counters and birthday reminders.
 
@@ -39,7 +39,7 @@ Scraps with visibility, the home page in time order, testimonials with approval,
 - a testimonial is invisible until approved, and disappears when hidden
 - rating totals appear, and no route exposes who rated what, by test
 
-## KT4 — communities
+## KT4 — communities ✅ on stage
 
 Create, browse and join communities, with open and approval policies, forum topics and posts, moderators, bans, and owner handover.
 
@@ -49,7 +49,7 @@ Create, browse and join communities, with open and approval policies, forum topi
 - a moderator removes a post and bans a member, and both take effect immediately
 - a person's block still applies inside a community forum
 
-## KT5 — photos
+## KT5 — photos — not started, needs an R2 token from the owner
 
 An R2 bucket per environment through the baseline's infrastructure, avatars and albums, type and size checks, and serving through the Worker so that album visibility is enforced.
 
@@ -58,7 +58,7 @@ An R2 bucket per environment through the baseline's infrastructure, avatars and 
 - a non-image, or a file over the limit, is refused by checking its bytes and not just its header
 - a friends-only album is refused to a non-friend, by test
 
-## KT6 — safety and the front door
+## KT6 — safety and the front door — stage ✅, prod needs Google sign-in
 
 Report buttons on all content, the moderation queue, removal, suspension, data export, account deletion, the public landing page, terms and privacy pages.
 

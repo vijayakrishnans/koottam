@@ -10,7 +10,7 @@ Koottam is inspired by Orkut's features. It does not use the Orkut name, logo or
 
 | Field | Value |
 |-------|-------|
-| Status | Draft |
+| Status | In progress |
 | Cluster | **KT** (KT0–KT6) |
 | Owner(s) | `apps/social-worker` (the resources) · `packages/db` + `packages/contracts` + `packages/sdk` (the wire) · `apps/web-console-next` (the surface) |
 | Builds on | `cirrus-baseline baseline-v27` — identity (including Google and GitHub OAuth), audit, notifications, policy, edge API |
