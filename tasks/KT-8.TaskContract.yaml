@@ -1,0 +1,23 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-8
+  title: "Reports, the moderation queue and suspension"
+spec:
+  goal: Anyone can report anything, moderators can act on reports at once, and a suspended person can reach nothing.
+  affects:
+    - default/koottam/contracts
+    - default/koottam/db
+    - default/koottam/db-migrate
+    - default/koottam/db-tests
+    - default/koottam/sdk
+    - default/koottam/social-worker
+    - default/koottam/social-worker-tests
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - A report made on stage reaches the queue, and removal takes effect at once.
+    - A suspended person can reach no social route and sees why.
+    - Only moderators can see the queue, by test.
+  gates: []

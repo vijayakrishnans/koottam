@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import type { PublicProfile } from "@saas/contracts/social";
+import { ReportButton } from "@/components/social/report-button";
 import { PersonCommunities, Scrapbook, Standing, Testimonials } from "@/components/social/page-panels";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -60,6 +61,7 @@ function Actions({ profile, reload }: { profile: PublicProfile; reload: () => vo
         <Button size="sm" variant="outline" disabled={busy} onClick={() => act(() => client.social.unfriend(handle))}>Remove friend</Button>
       )}
       <Button size="sm" variant="ghost" disabled={busy} onClick={() => setConfirmBlock(true)}>Block</Button>
+      <ReportButton subjectType="person" subjectId={handle} />
       <ConfirmDialog
         open={confirmBlock}
         onOpenChange={setConfirmBlock}

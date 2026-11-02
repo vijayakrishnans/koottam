@@ -6,6 +6,7 @@ import type {
   CountersResponse,
   CreateCommunityRequest,
   CreateProfileRequest,
+  CreateReportRequest,
   CreateScrapRequest,
   FriendsResponse,
   InviteCheckResponse,
@@ -16,6 +17,8 @@ import type {
   MyProfileResponse,
   PeopleResponse,
   RatingValues,
+  ReportAction,
+  ReportsResponse,
   Scrap,
   ScrapsResponse,
   StandingResponse,
@@ -227,5 +230,24 @@ export class SocialClient {
 
   deletePost(id: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
     return this.transport.request({ method: "DELETE", path: `/v1/social/posts/${encodeURIComponent(id)}` }, opts);
+  }
+
+  report(body: CreateReportRequest, opts: RequestOptions = {}): Promise<{ id: string }> {
+    return this.transport.request({ method: "POST", path: "/v1/social/reports", body }, opts);
+  }
+
+  openReports(opts: RequestOptions = {}): Promise<ReportsResponse> {
+    return this.transport.request({ method: "GET", path: "/v1/social/admin/reports" }, opts);
+  }
+
+  resolveReport(id: string, action: ReportAction, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request(
+      { method: "POST", path: `/v1/social/admin/reports/${encodeURIComponent(id)}/resolve`, body: { action } },
+      opts,
+    );
+  }
+
+  unsuspend(handle: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "POST", path: `/v1/social/admin/people/${encodeURIComponent(handle)}/unsuspend`, body: {} }, opts);
   }
 }

@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { ReportButton } from "@/components/social/report-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,8 +45,10 @@ export default function TopicPage() {
         <CardTitle className="break-words">{t.title}{t.locked ? " (locked)" : ""}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="flex flex-wrap gap-2">
+          <ReportButton subjectType="topic" subjectId={id} />
         {t.canModerate && (
-          <div className="flex flex-wrap gap-2">
+          <>
             <Button size="sm" variant="outline" disabled={busy} onClick={() => act(() => client.social.setTopicLocked(id, !t.locked))}>
               {t.locked ? "Unlock topic" : "Lock topic"}
             </Button>
@@ -62,8 +65,9 @@ export default function TopicPage() {
             >
               Delete topic
             </Button>
-          </div>
+          </>
         )}
+        </div>
         <ul className="divide-y">
           {posts.map((p) => (
             <li key={p.id} className="space-y-1 py-3 text-sm">
@@ -72,9 +76,12 @@ export default function TopicPage() {
                 <span className="text-xs text-muted-foreground">{new Date(p.createdAt).toLocaleString()}</span>
               </div>
               <p className="whitespace-pre-wrap break-words">{p.body}</p>
-              {p.canDelete && (
-                <Button size="sm" variant="ghost" disabled={busy} onClick={() => act(() => client.social.deletePost(p.id))}>Delete</Button>
-              )}
+              <div className="flex gap-1">
+                {p.canDelete && (
+                  <Button size="sm" variant="ghost" disabled={busy} onClick={() => act(() => client.social.deletePost(p.id))}>Delete</Button>
+                )}
+                <ReportButton subjectType="post" subjectId={p.id} />
+              </div>
             </li>
           ))}
         </ul>

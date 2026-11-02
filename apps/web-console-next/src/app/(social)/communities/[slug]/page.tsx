@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import type { CommunityMember, MemberAction } from "@saas/contracts/social";
+import { ReportButton } from "@/components/social/report-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -127,8 +128,10 @@ export default function CommunityPage() {
                   {pending ? "Cancel request" : "Leave"}
                 </Button>
               )}
-              {iAmOwner && (
+              {iAmOwner ? (
                 <Button size="sm" variant="ghost" disabled={busy} onClick={() => setConfirmDelete(true)}>Delete community</Button>
+              ) : (
+                <ReportButton subjectType="community" subjectId={slug} />
               )}
             </div>
           </CardContent>

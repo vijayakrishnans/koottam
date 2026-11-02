@@ -219,5 +219,14 @@ export const manifest: MigrationManifest = {
       description:
         "Koottam communities — communities, membership with roles, forum topics and posts",
     },
+    {
+      id: "240_social_safety",
+      context: "social",
+      path: "240_social_safety/up.sql",
+      checksum:
+        "c25022a7f8e98ce6fe94bd19cc91b8dfa48e8ee2f288b57287cd46f7cbb06c58",
+      description:
+        "Koottam safety — reports with an erased-on-resolve snapshot, suspensions and moderators",
+    },
   ],
 };

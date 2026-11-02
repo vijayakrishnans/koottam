@@ -46,6 +46,7 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
             <Link href="/communities" className="hover:underline">Communities</Link>
             <Link href="/invites" className="hover:underline">Invites</Link>
             <Link href="/settings" className="hover:underline">Settings</Link>
+            {me.data?.profile.isStaff && <Link href="/moderation" className="hover:underline">Moderation</Link>}
           </nav>
           <Button
             variant="ghost"
@@ -62,6 +63,8 @@ export default function SocialLayout({ children }: { children: React.ReactNode }
       <main className="mx-auto max-w-5xl px-4 py-6">
         {me.data ? (
           children
+        ) : me.error?.code === "suspended" ? (
+          <p className="text-sm">Your account has been suspended, so you can't use Koottam.</p>
         ) : me.error && me.error.code !== "profile_required" ? (
           <p className="text-sm text-destructive">Koottam couldn't load your profile. Please try again.</p>
         ) : (
