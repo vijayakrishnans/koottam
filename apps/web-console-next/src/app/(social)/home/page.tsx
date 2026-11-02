@@ -15,10 +15,11 @@ export default function HomePage() {
     <Card>
       <CardHeader>
         <CardTitle>{name ? `Welcome, ${name}` : "Welcome"}</CardTitle>
-        <CardDescription>Friends and scrapbooks are on their way. For now, you can set up your page and invite people.</CardDescription>
+        <CardDescription>Scrapbooks are on their way. For now, you can set up your page, find friends and invite people.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-wrap gap-4 text-sm">
         <Link className="text-primary hover:underline" href="/settings">Edit your profile</Link>
+        <Link className="text-primary hover:underline" href="/friends">Find friends</Link>
         <Link className="text-primary hover:underline" href="/invites">Invite someone</Link>
       </CardContent>
     </Card>

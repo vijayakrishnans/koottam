@@ -1,8 +1,9 @@
-import type { InviteStatus, InviteSummary, MyProfile, PublicProfile } from "@saas/contracts/social";
+import type { ConnectionState, InviteStatus, InviteSummary, MyProfile, PublicProfile } from "@saas/contracts/social";
 import { createSqlExecutor } from "@saas/db/d1";
 import { createSocialRepository, type SocialInvite, type SocialProfile, type SocialRepository } from "@saas/db/social";
 import type { Env } from "./env.js";
 import { fail, invalid, notFound, ok } from "./http.js";
+import { handleFriendRoute } from "./friends.js";
 import { parseCreate, parseEdit } from "./validate.js";
 
 const REQUEST_ID_RE = /^[\w-]{1,128}$/;
@@ -45,15 +46,20 @@ function toMine(p: SocialProfile): MyProfile {
     visibility: p.visibility,
     isMe: true,
     joinedAt: p.createdAt,
+    connection: "self",
+    friendRequestId: null,
+    mutualFriends: null,
   };
 }
 
-/**
- * What another member sees. A friends-only page shows only its card, until
- * friendships exist to open it (KT2). Never carries a user id or an email.
- */
-function toPublic(p: SocialProfile): PublicProfile {
-  const limited = p.visibility !== "everyone";
+/** What another member sees. A friends-only page shows just its card to non-friends. Never a user id or email. */
+function toPublic(
+  p: SocialProfile,
+  connection: ConnectionState,
+  friendRequestId: string | null,
+  mutualFriends: number,
+): PublicProfile {
+  const limited = p.visibility !== "everyone" && connection !== "friends";
   return {
     handle: p.handle,
     displayName: p.displayName,
@@ -67,7 +73,23 @@ function toPublic(p: SocialProfile): PublicProfile {
     birthdayMonth: !limited && p.birthdayVisible ? p.birthdayMonth : null,
     isMe: false,
     joinedAt: limited ? null : p.createdAt,
+    connection,
+    friendRequestId,
+    mutualFriends: limited ? null : mutualFriends,
   };
+}
+
+async function viewPerson(repo: SocialRepository, viewerId: string, person: SocialProfile): Promise<PublicProfile> {
+  const friends = await repo.areFriends(viewerId, person.userId);
+  const pending = friends ? null : await repo.pendingBetween(viewerId, person.userId);
+  const connection: ConnectionState = friends
+    ? "friends"
+    : !pending
+      ? "none"
+      : pending.fromUser === viewerId
+        ? "request_sent"
+        : "request_received";
+  return toPublic(person, connection, pending?.id ?? null, await repo.countMutualFriends(viewerId, person.userId));
 }
 
 function inviteStatus(i: SocialInvite, now: string): InviteStatus {
@@ -174,10 +196,12 @@ async function member(request: Request, env: Env, requestId: string): Promise<Re
     const handle = decodeURIComponent(personMatch[1]!).toLowerCase();
     if (handle === mine.handle) return ok({ profile: toMine(mine) }, requestId);
     const person = await repo.profileByHandle(handle);
-    return person ? ok({ profile: toPublic(person) }, requestId) : notFound(requestId);
+    // A block reads exactly like the person not existing, in both directions.
+    if (!person || (await repo.isBlockedEitherWay(userId, person.userId))) return notFound(requestId);
+    return ok({ profile: await viewPerson(repo, userId, person) }, requestId);
   }
 
-  return notFound(requestId);
+  return handleFriendRoute(request, repo, mine, now, requestId);
 }
 
 export async function route(request: Request, env: Env): Promise<Response> {

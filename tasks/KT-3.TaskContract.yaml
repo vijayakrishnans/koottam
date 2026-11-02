@@ -1,0 +1,23 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-3
+  title: "Friends: requests, lists, mutual friends, search and blocking"
+spec:
+  goal: Members can find each other and become friends, and a block makes two people invisible to each other.
+  affects:
+    - default/koottam/contracts
+    - default/koottam/db
+    - default/koottam/db-migrate
+    - default/koottam/db-tests
+    - default/koottam/sdk
+    - default/koottam/social-worker
+    - default/koottam/social-worker-tests
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - Two test accounts on stage become friends and each sees the other in their list.
+    - After a block neither person can see or write to the other, by test for every route.
+    - Friendship rows are symmetric and unique, by test.
+  gates: []

@@ -6,6 +6,8 @@ export interface PublicProfileCard {
   displayName: string;
 }
 
+export type ConnectionState = "self" | "none" | "request_sent" | "request_received" | "friends";
+
 export interface PublicProfile extends PublicProfileCard {
   /** False when the page is limited to its card by the owner's visibility. */
   limited: boolean;
@@ -19,6 +21,11 @@ export interface PublicProfile extends PublicProfileCard {
   birthdayMonth: number | null;
   isMe: boolean;
   joinedAt: string | null;
+  connection: ConnectionState;
+  /** Set while a request is pending in either direction. */
+  friendRequestId: string | null;
+  /** Friends you share. Null when the page is limited. */
+  mutualFriends: number | null;
 }
 
 export interface MyProfile extends PublicProfile {
@@ -75,4 +82,24 @@ export interface ListInvitesResponse {
 export interface CreateInviteResponse {
   invite: InviteSummary;
   code: string;
+}
+
+export interface FriendRequestSummary {
+  id: string;
+  person: PublicProfileCard;
+  createdAt: string;
+}
+
+export interface ListFriendRequestsResponse {
+  incoming: FriendRequestSummary[];
+  outgoing: FriendRequestSummary[];
+}
+
+export interface PeopleResponse {
+  people: PublicProfileCard[];
+}
+
+export interface FriendsResponse extends PeopleResponse {
+  /** True when this person shares their friends with friends only. */
+  hidden: boolean;
 }
