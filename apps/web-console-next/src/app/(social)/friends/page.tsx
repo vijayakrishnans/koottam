@@ -31,16 +31,19 @@ export default function FriendsPage() {
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState<{ handle: string; displayName: string }[] | null>(null);
 
-  const refresh = () => {
-    void queryClient.invalidateQueries({ queryKey: qk.socialFriendRequests() });
-    void queryClient.invalidateQueries({ queryKey: qk.socialFriends(handle) });
-    void queryClient.invalidateQueries({ queryKey: qk.socialBlocks() });
-  };
+  const [busy, setBusy] = React.useState(false);
 
+  // Stays busy until the lists are fresh, so the buttons can't be pressed twice.
   const act = async (run: () => Promise<unknown>) => {
+    setBusy(true);
     const r = await wrap(run);
     if (!r.ok) toast({ kind: "error", title: "That didn't work", description: r.error.message });
-    refresh();
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: qk.socialFriendRequests() }),
+      queryClient.invalidateQueries({ queryKey: qk.socialFriends(handle) }),
+      queryClient.invalidateQueries({ queryKey: qk.socialBlocks() }),
+    ]);
+    setBusy(false);
   };
 
   const search = async (e: React.FormEvent) => {
@@ -92,8 +95,8 @@ export default function FriendsPage() {
                 <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
                   <PersonLink handle={r.person.handle} name={r.person.displayName} />
                   <span className="flex gap-2">
-                    <Button size="sm" onClick={() => act(() => client.social.answerFriendRequest(r.id, "accept"))}>Accept</Button>
-                    <Button size="sm" variant="outline" onClick={() => act(() => client.social.answerFriendRequest(r.id, "decline"))}>Decline</Button>
+                    <Button size="sm" disabled={busy} onClick={() => act(() => client.social.answerFriendRequest(r.id, "accept"))}>Accept</Button>
+                    <Button size="sm" variant="outline" disabled={busy} onClick={() => act(() => client.social.answerFriendRequest(r.id, "decline"))}>Decline</Button>
                   </span>
                 </li>
               ))}
@@ -104,10 +107,10 @@ export default function FriendsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Your friends ({friends.data?.people.length ?? 0})</CardTitle>
+          <CardTitle className="text-base">Your friends{friends.data ? ` (${friends.data.people.length})` : ""}</CardTitle>
         </CardHeader>
         <CardContent>
-          {friends.data?.people.length ? (
+          {!friends.data ? null : friends.data.people.length ? (
             <ul className="space-y-1 text-sm">
               {friends.data.people.map((p) => (
                 <li key={p.handle}><PersonLink handle={p.handle} name={p.displayName} /></li>
@@ -129,7 +132,7 @@ export default function FriendsPage() {
               {outgoing.map((r) => (
                 <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
                   <PersonLink handle={r.person.handle} name={r.person.displayName} />
-                  <Button size="sm" variant="ghost" onClick={() => act(() => client.social.cancelFriendRequest(r.id))}>Cancel</Button>
+                  <Button size="sm" variant="ghost" disabled={busy} onClick={() => act(() => client.social.cancelFriendRequest(r.id))}>Cancel</Button>
                 </li>
               ))}
             </ul>
@@ -147,7 +150,7 @@ export default function FriendsPage() {
               {blocked.map((p) => (
                 <li key={p.handle} className="flex flex-wrap items-center justify-between gap-2 py-2">
                   <span>{p.displayName} <span className="text-muted-foreground">@{p.handle}</span></span>
-                  <Button size="sm" variant="ghost" onClick={() => act(() => client.social.unblock(p.handle))}>Unblock</Button>
+                  <Button size="sm" variant="ghost" disabled={busy} onClick={() => act(() => client.social.unblock(p.handle))}>Unblock</Button>
                 </li>
               ))}
             </ul>

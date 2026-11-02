@@ -39,7 +39,10 @@ export default function LoginPage() {
   const router = useRouter();
   const { client, target, availableTargets, setTarget, setToken, isLocked, deployEnv } = useSession();
   // Email codes need a verified sending domain, which prod does not have yet.
-  const emailCodes = deployEnv !== "prod";
+  // The server can't tell which environment this is, so decide after mounting.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  const emailCodes = mounted && deployEnv !== "prod";
   const { toast } = useToast();
   const [stage, setStage] = React.useState<"email" | "code">("email");
   const [challengeId, setChallengeId] = React.useState<string | null>(null);
@@ -112,7 +115,7 @@ export default function LoginPage() {
                 </div>}
               </div>
             )}
-            {!emailCodes && oauthProviders.length === 0 && (
+            {mounted && !emailCodes && oauthProviders.length === 0 && (
               <p className="text-sm text-muted-foreground">Sign-in isn't available yet. Please check back soon.</p>
             )}
             {emailCodes && (
