@@ -10,7 +10,7 @@ As-built ≠ intent. This file records what actually shipped, and every place th
 | KT3 — scrapbook and testimonials | ✅ on stage, shown in a browser | #7, #8 |
 | KT4 — communities | ✅ on stage, shown in a browser | #9 |
 | KT5 — photos | Not started. Needs an R2 token created by the owner, so KT6 went first | |
-| KT6 — safety and the front door | ✅ on stage, except a stranger redeeming an invite on prod, which needs Google sign-in. Terms and privacy are unreviewed drafts | #10, #11, #12, this PR |
+| KT6 — safety and the front door | ✅ on stage, except a stranger redeeming an invite on prod, which needs Google sign-in. Terms and privacy are unreviewed drafts | #10, #11, #12, #13, this PR |
 
 ## Departures from the design
 
@@ -57,6 +57,10 @@ Deletion removes the person's profile, friendships, scraps and testimonials in b
 ### The front door as built (KT-11)
 
 The product now uses a warm light theme instead of the baseline's dark console, set by the theme tokens and the default theme. The landing page takes a pasted invite link or code. The terms and privacy pages are plain-language drafts and say so, with no contact details yet. The baseline's `/orgs`, `/account`, `/onboarding` and `/demo` redirect to the home page. Their code stays in the repository.
+
+### The smoke test (KT-12)
+
+#13 removed the page title "koottam Console", which the web app's smoke test looked for. Stage deployed and failed its smoke test, and prod correctly stayed on its previous build until this landed.
 
 ### Known issues
 
