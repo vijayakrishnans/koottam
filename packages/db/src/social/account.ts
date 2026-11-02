@@ -127,7 +127,7 @@ export function createAccountRepository(sql: SqlExecutor) {
         { text: "DELETE FROM identity_security_events WHERE user_id IN ($1, $2)", params: [userId, identityId] },
         // Must run while identity_users still holds the address.
         {
-          text: `UPDATE notifications_notifications SET recipient_address = 'deleted@deleted.invalid'
+          text: `UPDATE notifications_notifications SET recipient_address = 'deleted@deleted.invalid', template_data = '{}'
                  WHERE recipient_address = (SELECT email_lower FROM identity_users WHERE id = $1)`,
           params: [identityId],
         },

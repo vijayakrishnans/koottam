@@ -140,17 +140,18 @@ describe("deletion", () => {
 
   it("erases their address from the notification log, leaving others'", async () => {
     const { call, db } = await busy();
-    const columns = (await db.prepare("PRAGMA table_info(notifications_notifications)").all()).results as any[];
-    const required = columns.filter((c) => c.notnull && c.dflt_value === null && !c.pk).map((c) => c.name as string);
-    const insert = async (id: string, address: string) => {
-      const names = ["id", ...required];
-      const values = names.map((n) => (n === "id" ? id : n === "recipient_address" ? address : n === "channel" ? "email" : "x"));
-      await db.prepare(`INSERT INTO notifications_notifications (${names.join(", ")}) VALUES (${names.map(() => "?").join(", ")})`).bind(...values).all();
-    };
+    const insert = (id: string, address: string) =>
+      db
+        .prepare(
+          `INSERT INTO notifications_notifications (id, org_id, category, template_key, template_data, channel, recipient_address)
+           VALUES (?, 'org', 'security', 'login', '{"email":"' || ? || '"}', 'email', ?)`,
+        )
+        .bind(id, address, address)
+        .all();
     await insert("mine", "asha@example.com");
     await insert("theirs", "ben@example.com");
     await call("asha", "POST", "me/delete", { confirmHandle: "asha" });
-    const text = JSON.stringify((await db.prepare("SELECT recipient_address FROM notifications_notifications").all()).results);
+    const text = JSON.stringify((await db.prepare("SELECT recipient_address, template_data FROM notifications_notifications").all()).results);
     expect(text).not.toContain("asha@example.com");
     expect(text).toContain("ben@example.com");
   });
