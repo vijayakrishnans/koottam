@@ -24,6 +24,14 @@ const nextConfig = {
   // which reads `.next/standalone/**` to bundle the server function before
   // emitting Pages-compatible assets into `.open-next/assets/**`.
   output: "standalone",
+  // The baseline's admin console isn't part of this product.
+  async redirects() {
+    return ["/orgs/:path*", "/account/:path*", "/onboarding", "/demo/:path*"].map((source) => ({
+      source,
+      destination: "/home",
+      permanent: false,
+    }));
+  },
   // Trace from the monorepo root so the standalone build pulls in workspace
   // dependencies (e.g. @saas/contracts) instead of trying to resolve them
   // from the per-app node_modules.

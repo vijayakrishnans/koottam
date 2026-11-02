@@ -7,30 +7,30 @@
     --font-sans: "Inter", system-ui, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-    /* Light theme — "paper" surface */
-    --background: 0 0% 100%;
-    --foreground: 240 10% 4%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 4%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 4%;
-    --primary: 245 80% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 10%;
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-    --accent: 240 5% 96%;
-    --accent-foreground: 240 6% 10%;
+    /* Koottam: warm paper, deep teal */
+    --background: 38 40% 96%;
+    --foreground: 195 30% 13%;
+    --card: 40 50% 99%;
+    --card-foreground: 195 30% 13%;
+    --popover: 40 50% 99%;
+    --popover-foreground: 195 30% 13%;
+    --primary: 184 72% 24%;
+    --primary-foreground: 40 50% 99%;
+    --secondary: 38 30% 90%;
+    --secondary-foreground: 195 30% 13%;
+    --muted: 38 30% 91%;
+    --muted-foreground: 195 12% 34%;
+    --accent: 16 70% 90%;
+    --accent-foreground: 14 60% 24%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 26 83% 14%;
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 245 80% 60%;
+    --border: 38 22% 84%;
+    --input: 38 22% 80%;
+    --ring: 184 72% 24%;
     --radius: 0.625rem;
   }
 

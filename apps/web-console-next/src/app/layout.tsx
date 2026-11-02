@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "../styles/globals.css";
 import { Providers } from "./providers";
 import { headers } from "next/headers";
-import { consoleTitle, rememberRequestHost, resolveAppConfig, type AppConfig } from "@/lib/app-config";
+import { rememberRequestHost, resolveAppConfig, type AppConfig } from "@/lib/app-config";
 
 // The product's identity for this request, from the Worker's `vars` (OpenNext
 // copies them into process.env per request), falling back to the compiled-in
@@ -18,7 +18,7 @@ async function requestConfig(): Promise<AppConfig> {
 export async function generateMetadata(): Promise<Metadata> {
   const config = await requestConfig();
   return {
-    title: consoleTitle(config),
+    title: config.productName,
     description: config.productDescription,
     manifest: "/manifest.webmanifest",
     appleWebApp: {

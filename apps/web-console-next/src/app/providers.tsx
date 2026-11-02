@@ -55,7 +55,7 @@ export function Providers({ config, children }: { config: AppConfig; children: R
   const [queryClient] = React.useState(makeQueryClient);
 
   return (
-    <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+    <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
       <QueryClientProvider client={queryClient}>
         <QueryClientCtx.Provider value={queryClient}>
           <SessionProvider>
