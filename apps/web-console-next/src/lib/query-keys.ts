@@ -15,6 +15,11 @@ export const qk = {
   socialFriends: (handle: string) => ["socialFriends", handle] as const,
   socialFriendRequests: () => ["socialFriendRequests"] as const,
   socialBlocks: () => ["socialBlocks"] as const,
+  socialHome: () => ["socialHome"] as const,
+  socialCounters: () => ["socialCounters"] as const,
+  socialScraps: (handle: string) => ["socialScraps", handle] as const,
+  socialTestimonials: (handle: string) => ["socialTestimonials", handle] as const,
+  socialStanding: (handle: string) => ["socialStanding", handle] as const,
   projects: (orgId: string) => ["projects", orgId] as const,
   environments: (orgId: string, projectId: string) =>
     ["environments", orgId, projectId] as const,

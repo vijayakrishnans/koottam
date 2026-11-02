@@ -1,12 +1,21 @@
 import type {
   CreateInviteResponse,
+  CountersResponse,
   CreateProfileRequest,
+  CreateScrapRequest,
   FriendsResponse,
   InviteCheckResponse,
+  HomeResponse,
   ListFriendRequestsResponse,
   ListInvitesResponse,
   MyProfileResponse,
   PeopleResponse,
+  RatingValues,
+  Scrap,
+  ScrapsResponse,
+  StandingResponse,
+  Testimonial,
+  TestimonialsResponse,
   PublicProfileResponse,
   UpdateProfileRequest,
 } from "@saas/contracts/social";
@@ -90,5 +99,59 @@ export class SocialClient {
 
   unblock(handle: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
     return this.transport.request({ method: "DELETE", path: `/v1/social/blocks/${encodeURIComponent(handle)}` }, opts);
+  }
+
+  home(opts: RequestOptions = {}): Promise<HomeResponse> {
+    return this.transport.request({ method: "GET", path: "/v1/social/home" }, opts);
+  }
+
+  counters(opts: RequestOptions = {}): Promise<CountersResponse> {
+    return this.transport.request({ method: "GET", path: "/v1/social/counters" }, opts);
+  }
+
+  scraps(handle: string, opts: RequestOptions = {}): Promise<ScrapsResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/people/${encodeURIComponent(handle)}/scraps` }, opts);
+  }
+
+  writeScrap(handle: string, body: CreateScrapRequest, opts: RequestOptions = {}): Promise<{ scrap: Scrap }> {
+    return this.transport.request({ method: "POST", path: `/v1/social/people/${encodeURIComponent(handle)}/scraps`, body }, opts);
+  }
+
+  deleteScrap(id: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "DELETE", path: `/v1/social/scraps/${encodeURIComponent(id)}` }, opts);
+  }
+
+  testimonials(handle: string, opts: RequestOptions = {}): Promise<TestimonialsResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/people/${encodeURIComponent(handle)}/testimonials` }, opts);
+  }
+
+  writeTestimonial(handle: string, body: string, opts: RequestOptions = {}): Promise<{ testimonial: Testimonial }> {
+    return this.transport.request(
+      { method: "POST", path: `/v1/social/people/${encodeURIComponent(handle)}/testimonials`, body: { body } },
+      opts,
+    );
+  }
+
+  answerTestimonial(id: string, answer: "approve" | "hide", opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "POST", path: `/v1/social/testimonials/${encodeURIComponent(id)}/${answer}`, body: {} }, opts);
+  }
+
+  deleteTestimonial(id: string, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "DELETE", path: `/v1/social/testimonials/${encodeURIComponent(id)}` }, opts);
+  }
+
+  standing(handle: string, opts: RequestOptions = {}): Promise<StandingResponse> {
+    return this.transport.request({ method: "GET", path: `/v1/social/people/${encodeURIComponent(handle)}/standing` }, opts);
+  }
+
+  setFan(handle: string, fan: boolean, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request(
+      { method: fan ? "PUT" : "DELETE", path: `/v1/social/people/${encodeURIComponent(handle)}/fan`, ...(fan ? { body: {} } : {}) },
+      opts,
+    );
+  }
+
+  rate(handle: string, body: RatingValues, opts: RequestOptions = {}): Promise<{ ok: boolean }> {
+    return this.transport.request({ method: "PUT", path: `/v1/social/people/${encodeURIComponent(handle)}/rating`, body }, opts);
   }
 }

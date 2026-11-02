@@ -42,6 +42,7 @@ export default function FriendsPage() {
       queryClient.invalidateQueries({ queryKey: qk.socialFriendRequests() }),
       queryClient.invalidateQueries({ queryKey: qk.socialFriends(handle) }),
       queryClient.invalidateQueries({ queryKey: qk.socialBlocks() }),
+      queryClient.invalidateQueries({ queryKey: qk.socialCounters() }),
     ]);
     setBusy(false);
   };

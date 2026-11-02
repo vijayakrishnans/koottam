@@ -82,7 +82,7 @@ export interface FriendRequest {
   person: Card;
 }
 
-const mapCard = (row: SqlRow): Card => ({
+export const mapCard = (row: SqlRow): Card => ({
   userId: String(row.user_id),
   handle: String(row.handle),
   displayName: String(row.display_name),
@@ -91,7 +91,7 @@ const mapCard = (row: SqlRow): Card => ({
 const pair = (x: string, y: string): [string, string] => (x < y ? [x, y] : [y, x]);
 
 /** Neither person has blocked the other. $1 is the viewer; the other id is the given column. */
-const notBlockedWith = (column: string): string => `NOT EXISTS (SELECT 1 FROM social_blocks b
+export const notBlockedWith = (column: string): string => `NOT EXISTS (SELECT 1 FROM social_blocks b
   WHERE (b.blocker_id = $1 AND b.blocked_id = ${column}) OR (b.blocker_id = ${column} AND b.blocked_id = $1))`;
 
 const USABLE_INVITE = `code_hash = $1 AND redeemed_by IS NULL AND revoked_at IS NULL
@@ -371,6 +371,14 @@ export function createSocialRepository(sql: SqlExecutor) {
           text: `UPDATE social_friend_requests SET status = 'cancelled', updated_at = $3
                  WHERE status = 'pending' AND ((from_user = $1 AND to_user = $2) OR (from_user = $2 AND to_user = $1))`,
           params: [blocker, blocked, now],
+        },
+        {
+          text: "DELETE FROM social_fans WHERE (fan_user = $1 AND of_user = $2) OR (fan_user = $2 AND of_user = $1)",
+          params: [blocker, blocked],
+        },
+        {
+          text: "DELETE FROM social_ratings WHERE (rater = $1 AND ratee = $2) OR (rater = $2 AND ratee = $1)",
+          params: [blocker, blocked],
         },
       ]);
     },

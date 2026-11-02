@@ -7,7 +7,7 @@ As-built ≠ intent. This file records what actually shipped, and every place th
 | KT0 — the spec | ✅ | #3 |
 | KT1 — people | ✅ on stage, shown in a browser. Prod sign-in needs Google credentials from the owner | #4 |
 | KT2 — friends | ✅ on stage, shown in a browser, with blocking also proven by test | #5, this PR |
-| KT3 — scrapbook and testimonials | | |
+| KT3 — scrapbook and testimonials | In progress | this PR |
 | KT4 — communities | | |
 | KT5 — photos | | |
 | KT6 — safety and the front door | | |
@@ -33,6 +33,12 @@ Only members with a profile can read pages. A friends-only page shows only its c
 Beyond the design: a sender can cancel a request, and asking someone who has already asked you counts as accepting. Blocking cancels pending requests in both directions.
 
 Migration 210 also holds the hash of a test invite that expires on 4 November 2026. It exists because the first stage test spent stage's founder invite. It reaches prod too, unused, and its code is known only to the session that made it.
+
+### Scrapbook as built (KT-5)
+
+The design let anyone write a scrap. Only friends can write scraps and testimonials or give ratings, because that removes most harassment from strangers. Anyone can become a fan.
+
+Rating averages stay hidden until three people have rated, so nobody's rating can be worked out from them. One person can write one testimonial about another, and must delete it to write another. Scraps are limited to 60 an hour per person. Deleting a scrap also erases its text. A block removes fans and ratings between the two people.
 
 ### Known issues
 
