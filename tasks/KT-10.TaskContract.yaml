@@ -1,0 +1,18 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-10
+  title: "Refuse sessions of deleted accounts"
+spec:
+  goal: A session belonging to a deleted account is treated as signed out, even while the edge still has it cached.
+  affects:
+    - default/koottam/db
+    - default/koottam/social-worker
+    - default/koottam/social-worker-tests
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - A cached session of a deleted account gets unauthenticated and can't make a new profile, by test.
+    - On stage, a second device goes back to sign-in after the account is deleted.
+  gates: []

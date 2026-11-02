@@ -156,13 +156,25 @@ describe("deletion", () => {
     expect(text).toContain("ben@example.com");
   });
 
-  it("frees the handle, but joining again takes a new invite", async () => {
-    const { call, seed, join } = await busy();
+  it("treats a still-cached session of a deleted account as signed out, even to rejoin", async () => {
+    const { call, seed, db } = await busy();
     await call("asha", "POST", "me/delete", { confirmHandle: "asha" });
-    expect((await call("asha", "GET", "me")).json.error.code).toBe("profile_required");
-    expect((await join("asha", "asha")).status).toBe(422);
+    expect((await call("asha", "GET", "me")).json.error.code).toBe("unauthenticated");
     await seed("fresh", "fresh");
-    expect((await join("asha", "fresh")).status).toBe(201);
+    const res = await call("asha", "POST", "me", { handle: "again", displayName: "Again", isAdult: true, inviteCode: "fresh" });
+    expect(res.json.error.code).toBe("unauthenticated");
+    expect((await db.prepare("SELECT * FROM social_profiles WHERE handle = 'again'").all()).results).toHaveLength(0);
+  });
+
+  it("frees the handle, but joining again takes a new invite", async () => {
+    const { call, seed } = await busy();
+    await call("asha", "POST", "me/delete", { confirmHandle: "asha" });
+    // Signing in with that email again makes a new identity, here "asha2".
+    const again = (code: string) => call("asha2", "POST", "me", { handle: "asha", displayName: "Asha", isAdult: true, inviteCode: code });
+    expect((await call("asha2", "GET", "me")).json.error.code).toBe("profile_required");
+    expect((await again("asha")).status).toBe(422);
+    await seed("fresh", "fresh");
+    expect((await again("fresh")).status).toBe(201);
   });
 
   it("keeps a spent invite spent, and cancels their open ones", async () => {
