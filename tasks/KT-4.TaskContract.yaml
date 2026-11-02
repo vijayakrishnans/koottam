@@ -1,0 +1,16 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: KT-4
+  title: "Friends page feedback and the prod sign-in flash"
+spec:
+  goal: Friend actions show progress and can't be pressed twice, counts aren't shown before they load, and prod's sign-in page doesn't flash a form that can't work.
+  affects:
+    - default/koottam/web-console-next
+    - specs/epics/koottam-social/**
+    - tasks/**
+  doneWhen:
+    - Friend action buttons are disabled until the lists refresh.
+    - The friend count is absent, not zero, while loading.
+    - Prod's sign-in page never renders the email form.
+  gates: []
